@@ -1,3 +1,7 @@
+# webarc.day
+
+This project scrapes data from various news outlets relevant to web development and displays it in link format.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
