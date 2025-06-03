@@ -54,16 +54,17 @@ export function News() {
   const [adSlotIndexes, setAdSlotIndexes] = useState<Record<string, number>>(
     {},
   );
-  const LIMIT = 6;
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
 
   // Initial fetch
   useEffect(() => {
     setLoading(true);
-    fetch(`/api/news?limit=${LIMIT}&skip=0`)
+    fetch(`/api/news`)
       .then((res) => res.json())
       .then((data) => {
         setNews(data.posts);
         setHasMore(data.hasMore);
+        setNextCursor(data.nextCursor);
         setLoading(false);
       })
       .catch((e) => {
@@ -81,14 +82,23 @@ export function News() {
         window.innerHeight + window.scrollY >=
           document.body.offsetHeight - 400 &&
         !loadingMore &&
-        hasMore
+        hasMore &&
+        nextCursor
       ) {
         setLoadingMore(true);
-        fetch(`/api/news?limit=${LIMIT}&skip=${news.length}`)
+        fetch(`/api/news?cursor=${encodeURIComponent(nextCursor)}`)
           .then((res) => res.json())
           .then((data) => {
-            setNews((prev) => [...prev, ...data.posts]);
+            // Deduplicate by link (or add by _id if available)
+            setNews((prev) => {
+              const seen = new Set(prev.map((p) => p.link));
+              return [
+                ...prev,
+                ...data.posts.filter((p: any) => !seen.has(p.link)),
+              ];
+            });
             setHasMore(data.hasMore);
+            setNextCursor(data.nextCursor);
             setLoadingMore(false);
           })
           .catch(() => {
@@ -98,7 +108,7 @@ export function News() {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [news.length, hasMore, loading, loadingMore]);
+  }, [hasMore, loading, loadingMore, nextCursor]);
 
   // Group news by date (descending)
   const newsByDate = useMemo(() => {
