@@ -319,7 +319,7 @@ export function News() {
   return (
     <section className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-4 px-4 py-12">
       {content}
-      {hasMore && !loadingMore && (
+      {hasMore && !loadingMore && !loading && (
         <div
           ref={observerTarget}
           className="flex w-full items-center justify-center py-16"
