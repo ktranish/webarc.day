@@ -11,5 +11,5 @@ export const categoryGradients: Record<string, string> = {
   php: "from-amber-50 to-amber-100",
   vite: "from-teal-50 to-teal-100",
   mern: "from-cyan-50 to-teal-100",
-  something: "from-rose-50 to-rose-100",
+  nocode: "from-rose-50 to-rose-100",
 };
