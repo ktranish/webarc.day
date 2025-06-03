@@ -24,12 +24,12 @@ function Header() {
 
 function NewsletterCTA() {
   return (
-    <div className="relative mx-auto flex w-full flex-col gap-y-4 rounded-3xl border border-blue-100 bg-gradient-to-br from-blue-50/60 to-white p-8 backdrop-blur-sm">
+    <div className="relative mx-auto flex w-full flex-col justify-between gap-y-4 rounded-3xl border border-blue-100 bg-gradient-to-br from-blue-50/60 to-white p-8 backdrop-blur-sm">
       <div className="flex flex-col gap-y-2">
-        <h2 className="text-xl font-semibold tracking-tight text-gray-900 sm:text-2xl">
+        <h3 className="font-semibold tracking-tight text-gray-900 sm:text-lg">
           Get Daily Updates
-        </h2>
-        <p className="text-sm text-gray-600 sm:text-base">
+        </h3>
+        <p className="text-sm text-gray-600">
           Stay in the loop with the latest web development news, delivered
           straight to your inbox.
         </p>
@@ -47,8 +47,8 @@ function NewsletterCTA() {
         >
           Subscribe
         </button>
+        <p className="text-xs text-gray-400">No spam, unsubscribe anytime.</p>
       </form>
-      <p className="text-xs text-gray-400">No spam, unsubscribe anytime.</p>
     </div>
   );
 }
@@ -78,6 +78,34 @@ type NewsItem = {
 
 type GridItem = NewsItem | { __adSlot: true } | { __newsletter: true };
 
+function getAdSlotIndex(items: NewsItem[], newsletterIndex: number | null) {
+  // Only show ad if we have enough content
+  if (items.length < 3) return null;
+
+  // Don't place ad in first or last position
+  const maxIndex = items.length - 2;
+  const minIndex = 1;
+
+  // Ensure ad is not too close to newsletter
+  let adIndex;
+  do {
+    adIndex = Math.floor(Math.random() * (maxIndex - minIndex + 1)) + minIndex;
+  } while (newsletterIndex !== null && Math.abs(adIndex - newsletterIndex) < 2);
+
+  return adIndex;
+}
+
+function getNewsletterPosition(posts: NewsItem[]) {
+  // Only show newsletter after minimum content
+  if (posts.length < 6) return null;
+
+  // Place newsletter in the middle third of content
+  const minIndex = Math.floor(posts.length / 3);
+  const maxIndex = Math.floor((posts.length * 2) / 3);
+
+  return Math.floor(Math.random() * (maxIndex - minIndex + 1)) + minIndex;
+}
+
 export function News() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -104,9 +132,7 @@ export function News() {
         setLoading(false);
         // Set newsletter slot index after first load
         if (data.posts.length > 0) {
-          setNewsletterSlotIndex(
-            Math.floor(Math.random() * (data.posts.length - 1)) + 1,
-          );
+          setNewsletterSlotIndex(getNewsletterPosition(data.posts));
         }
       })
       .catch((e) => {
@@ -179,18 +205,16 @@ export function News() {
       }, {});
       Object.entries(grouped).forEach(([date, items]) => {
         if (next[date] === undefined) {
-          let adSlotIndex = 0;
-          if (items.length > 2) {
-            adSlotIndex = Math.floor(Math.random() * (items.length - 2)) + 1;
-          } else if (items.length === 2) {
-            adSlotIndex = Math.floor(Math.random() * 2); // 0 or 1
-          } // if 1, will be 0
-          next[date] = adSlotIndex;
+          const localNewsletterIndex =
+            newsletterSlotIndex !== null
+              ? newsletterSlotIndex % items.length
+              : null;
+          next[date] = getAdSlotIndex(items, localNewsletterIndex) ?? 0;
         }
       });
       return next;
     });
-  }, [news]);
+  }, [news, newsletterSlotIndex]);
 
   let content;
   if (loading) {
@@ -214,7 +238,6 @@ export function News() {
   } else {
     content = dateOrder.map((date, i) => {
       const items = newsByDate[date];
-      // Use persistent ad slot index for this date
       const adSlotIndex = adSlotIndexes[date] ?? 0;
       const rowWithAd: GridItem[] = [
         ...items.slice(0, adSlotIndex),
@@ -229,7 +252,10 @@ export function News() {
 
       if (shouldInsertNewsletter) {
         const localIndex = newsletterSlotIndex % items.length;
-        rowWithAd.splice(localIndex, 0, { __newsletter: true });
+        // Only insert if there's enough space between ad and newsletter
+        if (Math.abs(localIndex - adSlotIndex) >= 2) {
+          rowWithAd.splice(localIndex, 0, { __newsletter: true });
+        }
       }
 
       return (
