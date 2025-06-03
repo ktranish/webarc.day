@@ -1,40 +1,85 @@
 # webarc.day
 
-This project scrapes data from various news outlets relevant to web development and displays it in link format.
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](./CODE_OF_CONDUCT.md)
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+A modern, beautiful, and open-source web application for aggregating and discovering the latest news, tutorials, and trends in web development. Powered by sources like Dev.to, Reddit, and more, webarc.day curates the best content for developers, designers, and tech enthusiasts—every day.
 
-## Getting Started
+---
 
-First, run the development server:
+## 🚀 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Daily curated news** from top web dev sources (Dev.to, Reddit, etc.)
+- **Responsive, modern UI** with date-grouped news cards and soft, accessible design
+- **Infinite scroll** with robust, cursor-based pagination
+- **Ad slots & newsletter CTA** with smart, non-intrusive placement
+- **Favicon and category badges** for each news item
+- **Loading, error, and empty states** for a smooth UX
+- **Submit a Source**: Community-driven source suggestions
+- **MongoDB backend** (official driver, no Mongoose)
+- **TypeScript, Next.js App Router, Tailwind CSS**
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🖼️ Screenshots
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+<!-- Add screenshots here -->
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Frontend:** Next.js (App Router), React, TypeScript, Tailwind CSS
+- **Backend:** Next.js API routes, MongoDB (official driver)
+- **Email:** Resend (newsletter audience management)
+- **Other:** Lucide Icons, Google Favicon API
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📝 Contributing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+We welcome contributions! Please read our [Contributing Guide](./CONTRIBUTING.md) and [Code of Conduct](./CODE_OF_CONDUCT.md) before submitting issues or pull requests.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Submit a Source](https://github.com/ktranish/webarc.day/issues/new)
+- [Open an Issue](https://github.com/ktranish/webarc.day/issues)
+
+---
+
+## 🏁 Getting Started
+
+1. **Clone the repo:**
+   ```sh
+   git clone https://github.com/ktranish/webarc.day.git
+   cd webarc.day
+   ```
+2. **Install dependencies:**
+   ```sh
+   pnpm install
+   ```
+3. **Set up environment variables:**
+   - Copy `.env.example` to `.env.local` and fill in the required values (MongoDB, Resend, etc.)
+4. **Run the dev server:**
+   ```sh
+   pnpm dev
+   ```
+5. **Open [http://localhost:3000](http://localhost:3000) in your browser.**
+
+---
+
+## 📄 License
+
+This project is [MIT licensed](./LICENSE).
+
+---
+
+## 🙏 Acknowledgements
+
+- [Contributor Covenant](https://www.contributor-covenant.org/)
+- [Dev.to API](https://dev.to/api)
+- [Reddit API](https://www.reddit.com/dev/api/)
+- [Resend](https://resend.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Next.js](https://nextjs.org/)
+
+---
+
+> Made with ❤️ by the webarc.day community
