@@ -43,6 +43,37 @@ function Header() {
 }
 
 function NewsletterCTA() {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setSuccess(null);
+    setError(null);
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setSuccess("Subscribed! Check your inbox.");
+        setEmail("");
+      } else {
+        setError(data.error || "Failed to subscribe.");
+      }
+    } catch (err) {
+      if (e instanceof Error) setError(e.message || "Failed to subscribe.");
+      else setError("Failed to subscribe.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="relative mx-auto flex w-full flex-col justify-between gap-y-4 rounded-3xl border border-blue-100 bg-gradient-to-br from-blue-50/60 to-white p-8 backdrop-blur-sm">
       <div className="flex flex-col gap-y-2">
@@ -54,20 +85,26 @@ function NewsletterCTA() {
           straight to your inbox.
         </p>
       </div>
-      <form className="flex w-full flex-col gap-3">
+      <form className="flex w-full flex-col gap-3" onSubmit={handleSubmit}>
         <input
           type="email"
           placeholder="Enter your email"
           className="flex-1 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-200 focus:ring-2 focus:ring-blue-100 focus:outline-none"
           required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          disabled={loading}
         />
         <button
           type="submit"
-          className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+          className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none disabled:opacity-60"
+          disabled={loading || !email}
         >
-          Subscribe
+          {loading ? "Subscribing..." : "Subscribe"}
         </button>
         <p className="text-xs text-gray-400">No spam, unsubscribe anytime.</p>
+        {success && <p className="text-xs text-green-500">{success}</p>}
+        {error && <p className="text-xs text-red-500">{error}</p>}
       </form>
     </div>
   );
