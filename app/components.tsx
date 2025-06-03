@@ -200,7 +200,6 @@ function getConsistentRandomPosition(
 export function News() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
@@ -219,8 +218,8 @@ export function News() {
       })
       .catch((e) => {
         if (e instanceof Error) {
-          setError(e.message || "Failed to load news.");
-        } else setError("Failed to load news.");
+          console.log(e.message || "Failed to load news.");
+        } else console.log("Failed to load news.");
         setLoading(false);
       });
   }, []);
@@ -370,12 +369,18 @@ export function News() {
                         </div>
                       </div>
                       <div className="flex flex-col gap-2">
-                        <h3 className="font-semibold tracking-tight text-gray-900 sm:text-lg">
-                          {item.title}
-                        </h3>
-                        <p className="text-sm text-gray-600">
-                          {item.description}
-                        </p>
+                        <h3
+                          className="font-semibold tracking-tight text-gray-900 sm:text-lg"
+                          dangerouslySetInnerHTML={{
+                            __html: item.title,
+                          }}
+                        />
+                        <p
+                          className="text-sm text-gray-600"
+                          dangerouslySetInnerHTML={{
+                            __html: item.description,
+                          }}
+                        />
                       </div>
                     </div>
                   </Link>
