@@ -6,6 +6,10 @@ import { NewsItem } from "@/types";
 import { ExternalLink, Megaphone } from "lucide-react";
 import Link from "next/link";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import {
+  GoogleReCaptchaProvider,
+  useGoogleReCaptcha,
+} from "react-google-recaptcha-v3";
 
 function Header() {
   return (
@@ -57,6 +61,7 @@ function NewsletterCTA() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -64,10 +69,16 @@ function NewsletterCTA() {
     setSuccess(null);
     setError(null);
     try {
+      if (!executeRecaptcha) {
+        throw new Error("reCAPTCHA not initialized");
+      }
+
+      const token = await executeRecaptcha("newsletter_subscribe");
+
       const res = await fetch("/api/newsletter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, recaptchaToken: token }),
       });
       const data = await res.json();
       if (res.ok) {
@@ -407,12 +418,22 @@ export function News() {
 
 export function Landing() {
   return (
-    <main className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-4 px-4 py-16">
-      <div className="flex flex-col items-center gap-y-2">
-        <Header />
-      </div>
-      <News />
-      <Dock />
-    </main>
+    <GoogleReCaptchaProvider
+      reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+      scriptProps={{
+        async: false,
+        defer: false,
+        appendTo: "head",
+        nonce: undefined,
+      }}
+    >
+      <main className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-4 px-4 py-16">
+        <div className="flex flex-col items-center gap-y-2">
+          <Header />
+        </div>
+        <News />
+        <Dock />
+      </main>
+    </GoogleReCaptchaProvider>
   );
 }
