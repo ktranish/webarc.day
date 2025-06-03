@@ -122,10 +122,13 @@ function NewsletterCTA() {
 
 function AdSlot() {
   return (
-    <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-3xl border-2 border-dashed border-blue-200 bg-white/80 px-4 py-20 text-center">
+    <a
+      href="mailto:kenny@ketryon.com?subject=Ad%20Inquiry"
+      className="group relative flex flex-col items-center justify-center overflow-hidden rounded-3xl border-2 border-dashed border-blue-200 bg-white/80 px-4 py-20 text-center transition hover:border-blue-300 hover:bg-white/90"
+    >
       {/* Subtle background pattern */}
       <svg
-        className="pointer-events-none absolute inset-0 h-full w-full opacity-10"
+        className="pointer-events-none absolute inset-0 h-full w-full opacity-10 transition group-hover:opacity-20"
         width="100%"
         height="100%"
         viewBox="0 0 100 100"
@@ -145,14 +148,14 @@ function AdSlot() {
           strokeDasharray="6 6"
         />
       </svg>
-      <Megaphone className="relative z-10 mb-2 h-6 w-6 text-blue-200" />
-      <div className="relative z-10 text-sm font-medium text-gray-400">
+      <Megaphone className="relative z-10 mb-2 h-6 w-6 text-blue-200 transition group-hover:text-blue-300" />
+      <div className="relative z-10 text-sm font-medium text-gray-400 transition group-hover:text-gray-500">
         Your ad could be here!
       </div>
-      <div className="relative z-10 mt-1 text-xs text-gray-300">
+      <div className="relative z-10 mt-1 text-xs text-gray-300 transition group-hover:text-gray-400">
         Reach thousands of web developers on webarc.day
       </div>
-    </div>
+    </a>
   );
 }
 
