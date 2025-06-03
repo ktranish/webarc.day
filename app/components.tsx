@@ -68,7 +68,7 @@ function NewsletterCTA() {
         setError(data.error || "Failed to subscribe.");
       }
     } catch (err) {
-      if (e instanceof Error) setError(e.message || "Failed to subscribe.");
+      if (err instanceof Error) setError(err.message || "Failed to subscribe.");
       else setError("Failed to subscribe.");
     } finally {
       setLoading(false);

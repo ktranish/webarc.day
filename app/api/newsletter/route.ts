@@ -19,9 +19,14 @@ export async function POST(req: NextRequest) {
     // Add to Resend audience
     await resend.contacts.create({ email, audienceId: AUDIENCE_ID });
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
-      { error: error.message || "Failed to subscribe" },
+      {
+        error:
+          error instanceof Error
+            ? error.message || "Failed to subscribe"
+            : "Failed to subscribe",
+      },
       { status: 500 },
     );
   }
