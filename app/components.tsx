@@ -2,6 +2,7 @@
 
 import { AppImage } from "@/components/app-image";
 import { categoryGradients } from "@/constants";
+import { NewsItem } from "@/types";
 import { ExternalLink, Megaphone } from "lucide-react";
 import Link from "next/link";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
@@ -146,58 +147,13 @@ function AdSlot() {
   );
 }
 
-type NewsItem = {
-  favicon: string;
-  title: string;
-  description: string;
-  category: string;
-  link: string;
-  date: string;
-};
-
-type GridItem = NewsItem | { __adSlot: true } | { __newsletter: true };
-
-function getAdSlotIndex(items: NewsItem[], newsletterIndex: number | null) {
-  // Only show ad if we have enough content
-  if (items.length < 3) return null;
-
-  // Don't place ad in first or last position
-  const maxIndex = items.length - 2;
-  const minIndex = 1;
-
-  // Ensure ad is not too close to newsletter
-  let adIndex;
-  do {
-    adIndex = Math.floor(Math.random() * (maxIndex - minIndex + 1)) + minIndex;
-  } while (newsletterIndex !== null && Math.abs(adIndex - newsletterIndex) < 2);
-
-  return adIndex;
-}
-
-function getNewsletterPosition(posts: NewsItem[]) {
-  // Only show newsletter after minimum content
-  if (posts.length < 6) return null;
-
-  // Place newsletter in the middle third of content
-  const minIndex = Math.floor(posts.length / 3);
-  const maxIndex = Math.floor((posts.length * 2) / 3);
-
-  return Math.floor(Math.random() * (maxIndex - minIndex + 1)) + minIndex;
-}
-
 export function News() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [adSlotIndexes, setAdSlotIndexes] = useState<Record<string, number>>(
-    {},
-  );
   const [nextCursor, setNextCursor] = useState<string | null>(null);
-  const [newsletterSlotIndex, setNewsletterSlotIndex] = useState<number | null>(
-    null,
-  );
   const observerTarget = useRef<HTMLDivElement>(null);
 
   // Initial fetch
@@ -210,10 +166,6 @@ export function News() {
         setHasMore(data.hasMore);
         setNextCursor(data.nextCursor);
         setLoading(false);
-        // Set newsletter slot index after first load
-        if (data.posts.length > 0) {
-          setNewsletterSlotIndex(getNewsletterPosition(data.posts));
-        }
       })
       .catch((e) => {
         if (e instanceof Error) {
@@ -236,15 +188,7 @@ export function News() {
               `/api/news?cursor=${encodeURIComponent(nextCursor)}`,
             );
             const data = await res.json();
-
-            // Deduplicate by link
-            setNews((prev) => {
-              const seen = new Set(prev.map((p) => p.link));
-              return [
-                ...prev,
-                ...data.posts.filter((p: NewsItem) => !seen.has(p.link)),
-              ];
-            });
+            setNews((prev) => [...prev, ...data.posts]);
             setHasMore(data.hasMore);
             setNextCursor(data.nextCursor);
           } catch (error) {
@@ -284,29 +228,6 @@ export function News() {
     [newsByDate],
   );
 
-  // When news changes, ensure adSlotIndexes are set for new dates
-  useEffect(() => {
-    if (!news) return;
-    setAdSlotIndexes((prev) => {
-      const next = { ...prev };
-      const grouped = news.reduce((acc: Record<string, NewsItem[]>, item) => {
-        acc[item.date] = acc[item.date] || [];
-        acc[item.date].push(item);
-        return acc;
-      }, {});
-      Object.entries(grouped).forEach(([date, items]) => {
-        if (next[date] === undefined) {
-          const localNewsletterIndex =
-            newsletterSlotIndex !== null
-              ? newsletterSlotIndex % items.length
-              : null;
-          next[date] = getAdSlotIndex(items, localNewsletterIndex) ?? 0;
-        }
-      });
-      return next;
-    });
-  }, [news, newsletterSlotIndex]);
-
   let content;
   if (loading) {
     content = (
@@ -329,25 +250,6 @@ export function News() {
   } else {
     content = dateOrder.map((date, i) => {
       const items = newsByDate[date];
-      const adSlotIndex = adSlotIndexes[date] ?? 0;
-      const rowWithAd: GridItem[] = [
-        ...items.slice(0, adSlotIndex),
-        { __adSlot: true },
-        ...items.slice(adSlotIndex),
-      ];
-
-      // Insert newsletter CTA if this is the right date section
-      const shouldInsertNewsletter =
-        newsletterSlotIndex !== null &&
-        i === Math.floor(newsletterSlotIndex / items.length);
-
-      if (shouldInsertNewsletter) {
-        const localIndex = newsletterSlotIndex % items.length;
-        // Only insert if there's enough space between ad and newsletter
-        if (Math.abs(localIndex - adSlotIndex) >= 2) {
-          rowWithAd.splice(localIndex, 0, { __newsletter: true });
-        }
-      }
 
       return (
         <Fragment key={date}>
@@ -362,52 +264,46 @@ export function News() {
               </span>
             </div>
             <div className="grid w-full grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {rowWithAd.map((item, idx) =>
-                "__adSlot" in item ? (
-                  <AdSlot key={`adslot-${date}-${idx}`} />
-                ) : "__newsletter" in item ? (
-                  <NewsletterCTA key={`newsletter-${date}-${idx}`} />
-                ) : (
-                  <Link
-                    key={item.title}
-                    href={item.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group/card animate-fade-in block w-full min-w-[260px] flex-1 rounded-3xl focus:ring-2 focus:ring-blue-200 focus:outline-none"
-                  >
-                    <div className="relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-gray-100 bg-white/80 p-6 backdrop-blur-sm transition">
-                      <ExternalLink
-                        className="absolute top-4 right-4 h-4 w-4 text-gray-300 transition-colors group-hover/card:text-blue-400"
-                        aria-label="External link"
-                      />
-                      <div
-                        className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${categoryGradients[item.category as keyof typeof categoryGradients] ?? "from-gray-50 to-gray-100"}`}
-                      >
-                        <div className="relative h-8 w-8">
-                          <AppImage
-                            src={item.favicon}
-                            alt={item.title + " favicon"}
-                            className="rounded-lg border border-gray-100 bg-white object-contain"
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        {item.category && (
-                          <span className="mb-1 self-start rounded-full border border-gray-100 bg-gray-50 px-2 py-0.5 text-xs font-semibold tracking-tight text-gray-500">
-                            {item.category}
-                          </span>
-                        )}
-                        <h3 className="font-semibold tracking-tight text-gray-900 sm:text-lg">
-                          {item.title}
-                        </h3>
-                        <p className="text-sm text-gray-600">
-                          {item.description}
-                        </p>
+              {items.map((item) => (
+                <Link
+                  key={item.title}
+                  href={item.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group/card animate-fade-in block w-full min-w-[260px] flex-1 rounded-3xl focus:ring-2 focus:ring-blue-200 focus:outline-none"
+                >
+                  <div className="relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-gray-100 bg-white/80 p-6 backdrop-blur-sm transition">
+                    <ExternalLink
+                      className="absolute top-4 right-4 h-4 w-4 text-gray-300 transition-colors group-hover/card:text-blue-400"
+                      aria-label="External link"
+                    />
+                    <div
+                      className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${categoryGradients[item.category as keyof typeof categoryGradients] ?? "from-gray-50 to-gray-100"}`}
+                    >
+                      <div className="relative h-8 w-8">
+                        <AppImage
+                          src={item.favicon}
+                          alt={item.title + " favicon"}
+                          className="rounded-lg border border-gray-100 bg-white object-contain"
+                        />
                       </div>
                     </div>
-                  </Link>
-                ),
-              )}
+                    <div className="flex flex-col gap-2">
+                      {item.category && (
+                        <span className="mb-1 self-start rounded-full border border-gray-100 bg-gray-50 px-2 py-0.5 text-xs font-semibold tracking-tight text-gray-500">
+                          {item.category}
+                        </span>
+                      )}
+                      <h3 className="font-semibold tracking-tight text-gray-900 sm:text-lg">
+                        {item.title}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
             </div>
             {i !== dateOrder.length - 1 && (
               <div className="mt-4 flex h-8 w-full items-center">
@@ -423,8 +319,11 @@ export function News() {
   return (
     <section className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-4 px-4 py-12">
       {content}
-      {loadingMore && (
-        <div className="flex w-full items-center justify-center py-16">
+      {hasMore && !loadingMore && (
+        <div
+          ref={observerTarget}
+          className="flex w-full items-center justify-center py-16"
+        >
           <span className="inline-block size-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
         </div>
       )}
