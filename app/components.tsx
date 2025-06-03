@@ -202,7 +202,7 @@ export function News() {
                     rel="noopener noreferrer"
                     className="group/card animate-fade-in block w-full min-w-[260px] flex-1 rounded-3xl focus:ring-2 focus:ring-blue-200 focus:outline-none"
                   >
-                    <div className="relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-gray-100 bg-white/80 p-6 shadow-sm backdrop-blur-sm transition hover:shadow-md">
+                    <div className="relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-gray-100 bg-white/80 p-6 backdrop-blur-sm transition">
                       <ExternalLink
                         className="absolute top-4 right-4 h-4 w-4 text-gray-300 transition-colors group-hover/card:text-blue-400"
                         aria-label="External link"
