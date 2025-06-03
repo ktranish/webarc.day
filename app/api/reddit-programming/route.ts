@@ -1,7 +1,7 @@
 import client from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-const REDDIT_API = "https://www.reddit.com/r/webdev/new.json?limit=10";
+const REDDIT_API = "https://www.reddit.com/r/programming/new.json?limit=10";
 
 interface RedditPost {
   id: string;
@@ -45,7 +45,7 @@ function createObjectIdFromTimestamp(
 
 export async function GET() {
   try {
-    // Fetch latest posts from r/webdev
+    // Fetch latest posts from r/programming
     const res = await fetch(REDDIT_API, {
       headers: { "User-Agent": "webarc.day bot" },
     });
@@ -67,7 +67,7 @@ export async function GET() {
         favicon: `https://www.google.com/s2/favicons?domain=reddit.com&sz=64`,
         title: post.title,
         description: post.selftext ? post.selftext.slice(0, 180) : post.title,
-        category: "webdev",
+        category: "programming",
         link: `https://reddit.com${post.permalink}`,
         date: new Date(timestamp * 1000).toISOString().split("T")[0],
         id: post.id,
@@ -86,7 +86,10 @@ export async function GET() {
         {
           $set: {
             ...post,
-            _id: createObjectIdFromTimestamp(post._timestamp, "reddit-webdev"),
+            _id: createObjectIdFromTimestamp(
+              post._timestamp,
+              "reddit-programming",
+            ),
           },
           $setOnInsert: { draft: true },
         },
