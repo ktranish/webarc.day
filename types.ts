@@ -1,1 +1,1 @@
-export type Category = "UX" | "Tech" | "Platform";
+export type Category = "webdev" | "solodev" | "nextjs" | "productivity";

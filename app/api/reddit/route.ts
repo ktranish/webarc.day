@@ -1,18 +1,21 @@
 import client from "@/lib/mongodb";
 
-const DEVTO_API = "https://dev.to/api/articles/latest?per_page=10&tag=webdev";
+const REDDIT_API = "https://www.reddit.com/r/webdev/new.json?limit=10";
 
 export async function GET() {
   try {
-    // Fetch latest posts from Dev.to
-    const res = await fetch(DEVTO_API);
+    // Fetch latest posts from r/webdev
+    const res = await fetch(REDDIT_API, {
+      headers: { "User-Agent": "webarc.day bot" },
+    });
     if (!res.ok) {
       return new Response(
-        JSON.stringify({ error: "Failed to fetch from Dev.to" }),
+        JSON.stringify({ error: "Failed to fetch from Reddit" }),
         { status: 502 },
       );
     }
-    const posts = await res.json();
+    const data = await res.json();
+    const posts = data.data.children.map((child: any) => child.data);
 
     // Format posts to match local news structure
     const formatted = posts.map((post: any) => {
@@ -23,11 +26,11 @@ export async function GET() {
       return {
         favicon: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
         title: post.title,
-        description: post.description || post.summary || post.title,
-        category: post.tag_list[0],
-        link: post.url,
-        date: post.published_at
-          ? post.published_at.split("T")[0]
+        description: post.selftext ? post.selftext.slice(0, 180) : post.title,
+        category: "webdev",
+        link: `https://reddit.com${post.permalink}`,
+        date: post.created_utc
+          ? new Date(post.created_utc * 1000).toISOString().split("T")[0]
           : new Date().toISOString().split("T")[0],
         id: post.id, // keep for upsert
       };
