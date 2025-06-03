@@ -1,5 +1,7 @@
 import { Category } from "./types";
 
+export const BASE_URL = "https://www.webarc.day";
+
 export const categoryGradients: Record<Category, string> = {
   webdev: "from-pink-50 to-pink-100",
   solodev: "from-blue-50 to-blue-100",
