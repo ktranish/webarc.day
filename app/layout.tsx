@@ -1,5 +1,6 @@
 import { BASE_URL } from "@/constants";
 import { cn } from "@/lib/utils";
+import { Analytics } from "@vercel/analytics/next";
 import { Metadata, Viewport } from "next";
 import { Sora } from "next/font/google";
 import "./globals.css";
@@ -76,7 +77,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn("antialiased", sora.className)}>{children}</body>
+      <body className={cn("antialiased", sora.className)}>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
