@@ -147,6 +147,25 @@ function AdSlot() {
   );
 }
 
+function getConsistentRandomPosition(
+  date: string,
+  type: "ad" | "newsletter",
+  totalItems: number,
+): number {
+  // Use date and type to create a unique seed
+  const seed = `${date}-${type}`;
+  const hash = seed
+    .split("")
+    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+
+  // Ensure we have enough items and position is not at start/end
+  if (totalItems < 3) return -1;
+
+  // Generate position between 1 and totalItems - 1
+  const position = (hash % (totalItems - 2)) + 1;
+  return position;
+}
+
 export function News() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -214,42 +233,64 @@ export function News() {
     };
   }, [hasMore, loading, loadingMore, nextCursor]);
 
-  // Group news by date (descending)
-  const newsByDate = useMemo(() => {
-    if (!news) return {};
-    return news.reduce((acc: Record<string, NewsItem[]>, item) => {
-      acc[item.date] = acc[item.date] || [];
-      acc[item.date].push(item);
-      return acc;
-    }, {});
-  }, [news]);
-  const dateOrder = useMemo(
-    () => Object.keys(newsByDate).sort((a, b) => b.localeCompare(a)),
-    [newsByDate],
-  );
+  const content = useMemo(() => {
+    if (loading && news.length === 0) {
+      return (
+        <div className="flex w-full items-center justify-center py-16">
+          <span className="inline-block size-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
+        </div>
+      );
+    }
 
-  let content;
-  if (loading) {
-    content = (
-      <div className="flex w-full items-center justify-center py-16">
-        <span className="inline-block size-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
-      </div>
+    if (!loading && news.length === 0) {
+      return (
+        <div className="flex w-full items-center justify-center py-16 text-base font-medium text-gray-300">
+          No news available.
+        </div>
+      );
+    }
+
+    // Group news by date
+    const newsByDate = news.reduce(
+      (acc, item) => {
+        const date = item.date;
+        if (!acc[date]) acc[date] = [];
+        acc[date].push(item);
+        return acc;
+      },
+      {} as Record<string, NewsItem[]>,
     );
-  } else if (error) {
-    content = (
-      <div className="flex w-full items-center justify-center py-16 text-lg font-medium text-red-400">
-        {error}
-      </div>
+
+    // Sort dates in descending order
+    const dateOrder = Object.keys(newsByDate).sort((a, b) =>
+      b.localeCompare(a),
     );
-  } else if (!news || news.length === 0) {
-    content = (
-      <div className="flex w-full items-center justify-center py-16 text-lg font-medium text-gray-300">
-        No news available.
-      </div>
-    );
-  } else {
-    content = dateOrder.map((date, i) => {
+
+    return dateOrder.map((date, i) => {
       const items = newsByDate[date];
+
+      // Calculate positions for ad and newsletter
+      const adPosition = getConsistentRandomPosition(date, "ad", items.length);
+      const newsletterPosition = getConsistentRandomPosition(
+        date,
+        "newsletter",
+        items.length,
+      );
+
+      // Create array with items and insert ad/newsletter at calculated positions
+      const itemsWithAds = items.reduce(
+        (acc: (NewsItem | "ad" | "newsletter")[], item, index) => {
+          if (index === adPosition) {
+            acc.push("ad");
+          }
+          if (index === newsletterPosition) {
+            acc.push("newsletter");
+          }
+          acc.push(item);
+          return acc;
+        },
+        [],
+      );
 
       return (
         <Fragment key={date}>
@@ -263,47 +304,56 @@ export function News() {
                 })}
               </span>
             </div>
+
             <div className="grid w-full grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {items.map((item) => (
-                <Link
-                  key={item.title}
-                  href={item.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group/card animate-fade-in block w-full min-w-[260px] flex-1 rounded-3xl focus:ring-2 focus:ring-blue-200 focus:outline-none"
-                >
-                  <div className="relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-gray-100 bg-white/80 p-6 backdrop-blur-sm transition">
-                    <ExternalLink
-                      className="absolute top-4 right-4 h-4 w-4 text-gray-300 transition-colors group-hover/card:text-blue-400"
-                      aria-label="External link"
-                    />
-                    <div
-                      className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${categoryGradients[item.category as keyof typeof categoryGradients] ?? "from-gray-50 to-gray-100"}`}
-                    >
-                      <div className="relative h-8 w-8">
-                        <AppImage
-                          src={item.favicon}
-                          alt={item.title + " favicon"}
-                          className="rounded-lg border border-gray-100 bg-white object-contain"
-                        />
+              {itemsWithAds.map((item, index) => {
+                if (item === "ad") {
+                  return <AdSlot key={`ad-${date}-${index}`} />;
+                }
+                if (item === "newsletter") {
+                  return <NewsletterCTA key={`newsletter-${date}-${index}`} />;
+                }
+                return (
+                  <Link
+                    key={item.title}
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group/card animate-fade-in block w-full min-w-[260px] flex-1 rounded-3xl focus:ring-2 focus:ring-blue-200 focus:outline-none"
+                  >
+                    <div className="relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-gray-100 bg-white/80 p-6 backdrop-blur-sm transition">
+                      <ExternalLink
+                        className="absolute top-4 right-4 h-4 w-4 text-gray-300 transition-colors group-hover/card:text-blue-400"
+                        aria-label="External link"
+                      />
+                      <div
+                        className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${categoryGradients[item.category as keyof typeof categoryGradients] ?? "from-gray-50 to-gray-100"}`}
+                      >
+                        <div className="relative h-8 w-8">
+                          <AppImage
+                            src={item.favicon}
+                            alt={item.title + " favicon"}
+                            className="rounded-lg border border-gray-100 bg-white object-contain"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        {item.category && (
+                          <span className="mb-1 self-start rounded-full border border-gray-100 bg-gray-50 px-2 py-0.5 text-xs font-semibold tracking-tight text-gray-500">
+                            {item.category}
+                          </span>
+                        )}
+                        <h3 className="font-semibold tracking-tight text-gray-900 sm:text-lg">
+                          {item.title}
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          {item.description}
+                        </p>
                       </div>
                     </div>
-                    <div className="flex flex-col gap-2">
-                      {item.category && (
-                        <span className="mb-1 self-start rounded-full border border-gray-100 bg-gray-50 px-2 py-0.5 text-xs font-semibold tracking-tight text-gray-500">
-                          {item.category}
-                        </span>
-                      )}
-                      <h3 className="font-semibold tracking-tight text-gray-900 sm:text-lg">
-                        {item.title}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        {item.description}
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
             {i !== dateOrder.length - 1 && (
               <div className="mt-4 flex h-8 w-full items-center">
@@ -314,7 +364,7 @@ export function News() {
         </Fragment>
       );
     });
-  }
+  }, [news, loading]);
 
   return (
     <section className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-4 px-4 py-12">
