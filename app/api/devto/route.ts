@@ -15,23 +15,17 @@ export async function GET() {
     const posts = await res.json();
 
     // Format posts to match local news structure
-    const formatted = posts.map((post: any) => {
-      let domain = "";
-      try {
-        domain = new URL(post.url).hostname;
-      } catch {}
-      return {
-        favicon: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
-        title: post.title,
-        description: post.description || post.summary || post.title,
-        category: post.tag_list[0],
-        link: post.url,
-        date: post.published_at
-          ? post.published_at.split("T")[0]
-          : new Date().toISOString().split("T")[0],
-        id: post.id, // keep for upsert
-      };
-    });
+    const formatted = posts.map((post: any) => ({
+      favicon: `https://www.google.com/s2/favicons?domain=dev.to&sz=64`,
+      title: post.title,
+      description: post.description || post.summary || post.title,
+      category: post.tag_list[0],
+      link: post.url,
+      date: post.published_at
+        ? post.published_at.split("T")[0]
+        : new Date().toISOString().split("T")[0],
+      id: post.id,
+    }));
 
     // Insert posts into MongoDB
     const db = client.db("webarc");

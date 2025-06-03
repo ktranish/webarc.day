@@ -18,23 +18,17 @@ export async function GET() {
     const posts = data.data.children.map((child: any) => child.data);
 
     // Format posts to match local news structure
-    const formatted = posts.map((post: any) => {
-      let domain = "";
-      try {
-        domain = new URL(post.url).hostname;
-      } catch {}
-      return {
-        favicon: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
-        title: post.title,
-        description: post.selftext ? post.selftext.slice(0, 180) : post.title,
-        category: "webdev",
-        link: `https://reddit.com${post.permalink}`,
-        date: post.created_utc
-          ? new Date(post.created_utc * 1000).toISOString().split("T")[0]
-          : new Date().toISOString().split("T")[0],
-        id: post.id, // keep for upsert
-      };
-    });
+    const formatted = posts.map((post: any) => ({
+      favicon: `https://www.google.com/s2/favicons?domain=reddit.com&sz=64`,
+      title: post.title,
+      description: post.selftext ? post.selftext.slice(0, 180) : post.title,
+      category: "webdev",
+      link: `https://reddit.com${post.permalink}`,
+      date: post.created_utc
+        ? new Date(post.created_utc * 1000).toISOString().split("T")[0]
+        : new Date().toISOString().split("T")[0],
+      id: post.id,
+    }));
 
     // Insert posts into MongoDB
     const db = client.db("webarc");
