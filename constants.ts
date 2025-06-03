@@ -8,4 +8,6 @@ export const categoryGradients: Record<string, string> = {
   programming: "from-sky-50 to-sky-100",
   php: "from-amber-50 to-amber-100",
   vite: "from-teal-50 to-teal-100",
+  mern: "from-cyan-50 to-teal-100",
+  something: "from-rose-50 to-rose-100",
 };

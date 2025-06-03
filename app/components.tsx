@@ -147,34 +147,30 @@ function AdSlot() {
   );
 }
 
-function getConsistentRandomPositions(
+function getConsistentRandomPosition(
   date: string,
-  type: "ad" | "newsletter",
   totalItems: number,
+  type: "ad" | "newsletter",
 ): number[] {
-  // Calculate how many slots we should have (1 per 6 items, minimum 1)
-  const numSlots = Math.max(1, Math.floor(totalItems / 6));
-
-  // Generate positions for each slot
+  // Use date as seed for consistent positions
+  const seed = date.split("-").join("");
   const positions: number[] = [];
-  for (let i = 0; i < numSlots; i++) {
-    // Use both date, type, and slot index to create unique seeds
-    const seed = `${date}-${type}-${i}`;
-    const hash = seed
-      .split("")
-      .reduce((acc, char) => acc + char.charCodeAt(0), 0);
 
-    // Calculate position for this slot
-    // Distribute positions evenly across the section
-    const sectionSize = Math.floor(totalItems / (numSlots + 1));
-    const basePosition = i * sectionSize;
-    const offset = hash % sectionSize;
-    const position = basePosition + offset + 1; // +1 to avoid first position
+  // Calculate number of items based on total posts
+  // For ads: 1 per 6 posts, minimum 1
+  // For newsletters: 1 per 12 posts, minimum 1
+  const numItems = Math.max(
+    1,
+    Math.floor(totalItems / (type === "ad" ? 6 : 12)),
+  );
 
-    positions.push(position);
+  // Generate consistent positions
+  for (let i = 0; i < numItems; i++) {
+    const position = (parseInt(seed) * (i + 1)) % (totalItems - 1);
+    positions.push(position + 1); // Add 1 to avoid placing at start
   }
 
-  return positions;
+  return positions.sort((a, b) => a - b);
 }
 
 export function News() {
@@ -281,15 +277,11 @@ export function News() {
       const items = newsByDate[date];
 
       // Calculate positions for ads and newsletters
-      const adPositions = getConsistentRandomPositions(
+      const adPositions = getConsistentRandomPosition(date, items.length, "ad");
+      const newsletterPositions = getConsistentRandomPosition(
         date,
-        "ad",
         items.length,
-      );
-      const newsletterPositions = getConsistentRandomPositions(
-        date,
         "newsletter",
-        items.length,
       );
 
       // Create array with items and insert ads/newsletters at calculated positions
