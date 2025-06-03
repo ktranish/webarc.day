@@ -2,6 +2,7 @@
 
 import { AppImage } from "@/components/app-image";
 import { categoryGradients } from "@/constants";
+import { cn } from "@/lib/utils";
 import { NewsItem } from "@/types";
 import { ExternalLink, Megaphone } from "lucide-react";
 import Link from "next/link";
@@ -351,14 +352,19 @@ export function News() {
                     rel="noopener noreferrer"
                     className="group/card animate-fade-in block w-full min-w-[260px] flex-1 rounded-3xl focus:ring-2 focus:ring-blue-200 focus:outline-none"
                   >
-                    <div className="relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-gray-100 bg-white/80 p-6 backdrop-blur-sm transition">
+                    <div
+                      className={cn(
+                        categoryGradients[
+                          item.category as keyof typeof categoryGradients
+                        ] ?? "from-gray-50 to-gray-100",
+                        "relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-gray-100 bg-gradient-to-br p-6 backdrop-blur-sm transition",
+                      )}
+                    >
                       <ExternalLink
                         className="absolute top-4 right-4 h-4 w-4 text-gray-300 transition-colors group-hover/card:text-blue-400"
                         aria-label="External link"
                       />
-                      <div
-                        className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${categoryGradients[item.category as keyof typeof categoryGradients] ?? "from-gray-50 to-gray-100"}`}
-                      >
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl">
                         <div className="relative h-8 w-8">
                           <AppImage
                             src={item.favicon}
@@ -368,11 +374,6 @@ export function News() {
                         </div>
                       </div>
                       <div className="flex flex-col gap-2">
-                        {item.category && (
-                          <span className="mb-1 self-start rounded-full border border-gray-100 bg-gray-50 px-2 py-0.5 text-xs font-semibold tracking-tight text-gray-500">
-                            {item.category}
-                          </span>
-                        )}
                         <h3 className="font-semibold tracking-tight text-gray-900 sm:text-lg">
                           {item.title}
                         </h3>
