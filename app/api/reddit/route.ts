@@ -2,6 +2,32 @@ import client from "@/lib/mongodb";
 
 const REDDIT_API = "https://www.reddit.com/r/webdev/new.json?limit=10";
 
+interface RedditPost {
+  id: string;
+  title: string;
+  selftext: string;
+  permalink: string;
+  created_utc: number;
+}
+
+interface RedditResponse {
+  data: {
+    children: Array<{
+      data: RedditPost;
+    }>;
+  };
+}
+
+interface FormattedPost {
+  favicon: string;
+  title: string;
+  description: string;
+  category: string;
+  link: string;
+  date: string;
+  id: string;
+}
+
 export async function GET() {
   try {
     // Fetch latest posts from r/webdev
@@ -14,11 +40,11 @@ export async function GET() {
         { status: 502 },
       );
     }
-    const data = await res.json();
-    const posts = data.data.children.map((child: any) => child.data);
+    const data = (await res.json()) as RedditResponse;
+    const posts = data.data.children.map((child) => child.data);
 
     // Format posts to match local news structure
-    const formatted = posts.map((post: any) => ({
+    const formatted: FormattedPost[] = posts.map((post) => ({
       favicon: `https://www.google.com/s2/favicons?domain=reddit.com&sz=64`,
       title: post.title,
       description: post.selftext ? post.selftext.slice(0, 180) : post.title,
@@ -35,7 +61,7 @@ export async function GET() {
     const collection = db.collection("posts");
 
     // Upsert by id to avoid duplicates
-    const ops = formatted.map((post: any) =>
+    const ops = formatted.map((post) =>
       collection.updateOne(
         { id: post.id },
         { $set: post, $setOnInsert: { draft: true } },
@@ -47,7 +73,7 @@ export async function GET() {
     // Return the formatted posts (without id)
     return new Response(
       JSON.stringify(
-        formatted.map((post: any) => {
+        formatted.map((post) => {
           const { id, ...rest } = post;
           return rest;
         }),
@@ -57,7 +83,8 @@ export async function GET() {
         headers: { "Content-Type": "application/json" },
       },
     );
-  } catch (e: any) {
-    return new Response(JSON.stringify({ error: e.message }), { status: 500 });
+  } catch (e: unknown) {
+    const error = e instanceof Error ? e.message : "Unknown error occurred";
+    return new Response(JSON.stringify({ error }), { status: 500 });
   }
 }

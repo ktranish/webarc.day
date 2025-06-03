@@ -2,6 +2,26 @@ import client from "@/lib/mongodb";
 
 const DEVTO_API = "https://dev.to/api/articles/latest?per_page=10&tag=webdev";
 
+interface DevToPost {
+  id: number;
+  title: string;
+  description: string | null;
+  summary: string | null;
+  tag_list: string[];
+  url: string;
+  published_at: string | null;
+}
+
+interface FormattedPost {
+  favicon: string;
+  title: string;
+  description: string;
+  category: string;
+  link: string;
+  date: string;
+  id: number;
+}
+
 export async function GET() {
   try {
     // Fetch latest posts from Dev.to
@@ -12,10 +32,10 @@ export async function GET() {
         { status: 502 },
       );
     }
-    const posts = await res.json();
+    const posts = (await res.json()) as DevToPost[];
 
     // Format posts to match local news structure
-    const formatted = posts.map((post: any) => ({
+    const formatted: FormattedPost[] = posts.map((post) => ({
       favicon: `https://www.google.com/s2/favicons?domain=dev.to&sz=64`,
       title: post.title,
       description: post.description || post.summary || post.title,
@@ -32,7 +52,7 @@ export async function GET() {
     const collection = db.collection("posts");
 
     // Upsert by id to avoid duplicates
-    const ops = formatted.map((post: any) =>
+    const ops = formatted.map((post) =>
       collection.updateOne(
         { id: post.id },
         { $set: post, $setOnInsert: { draft: true } },
@@ -44,7 +64,7 @@ export async function GET() {
     // Return the formatted posts (without id)
     return new Response(
       JSON.stringify(
-        formatted.map((post: any) => {
+        formatted.map((post) => {
           const { id, ...rest } = post;
           return rest;
         }),
@@ -54,7 +74,8 @@ export async function GET() {
         headers: { "Content-Type": "application/json" },
       },
     );
-  } catch (e: any) {
-    return new Response(JSON.stringify({ error: e.message }), { status: 500 });
+  } catch (e: unknown) {
+    const error = e instanceof Error ? e.message : "Unknown error occurred";
+    return new Response(JSON.stringify({ error }), { status: 500 });
   }
 }

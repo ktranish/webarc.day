@@ -2,15 +2,39 @@ import client from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { NextRequest } from "next/server";
 
+interface Post {
+  favicon: string;
+  title: string;
+  description: string;
+  category: string;
+  link: string;
+  date: string;
+}
+
+interface MongoPost extends Post {
+  _id: ObjectId;
+}
+
+interface MongoQuery {
+  draft: boolean;
+  _id?: { $lt: ObjectId };
+}
+
+interface NewsResponse {
+  posts: Post[];
+  nextCursor: string | null;
+  hasMore: boolean;
+}
+
 export async function GET(req: NextRequest) {
   try {
     const db = client.db("webarc");
-    const collection = db.collection("posts");
+    const collection = db.collection<MongoPost>("posts");
     const { searchParams } = new URL(req.url);
     const limit = 6;
     const cursor = searchParams.get("cursor");
 
-    const query: any = { draft: false };
+    const query: MongoQuery = { draft: false };
     if (cursor) {
       query._id = { $lt: new ObjectId(cursor) };
     }
@@ -32,11 +56,13 @@ export async function GET(req: NextRequest) {
       ? rawPosts[rawPosts.length - 1]._id.toString()
       : null;
 
-    return new Response(JSON.stringify({ posts, nextCursor, hasMore }), {
+    const response: NewsResponse = { posts, nextCursor, hasMore };
+    return new Response(JSON.stringify(response), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  } catch (e: any) {
-    return new Response(JSON.stringify({ error: e.message }), { status: 500 });
+  } catch (e: unknown) {
+    const error = e instanceof Error ? e.message : "Unknown error occurred";
+    return new Response(JSON.stringify({ error }), { status: 500 });
   }
 }

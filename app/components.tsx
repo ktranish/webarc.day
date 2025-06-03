@@ -68,10 +68,11 @@ export function News() {
         setLoading(false);
       })
       .catch((e) => {
-        setError("Failed to load news.");
+        if (e instanceof Error) {
+          setError(e.message || "Failed to load news.");
+        } else setError("Failed to load news.");
         setLoading(false);
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Infinite scroll
@@ -94,7 +95,7 @@ export function News() {
               const seen = new Set(prev.map((p) => p.link));
               return [
                 ...prev,
-                ...data.posts.filter((p: any) => !seen.has(p.link)),
+                ...data.posts.filter((p: NewsItem) => !seen.has(p.link)),
               ];
             });
             setHasMore(data.hasMore);
@@ -152,8 +153,8 @@ export function News() {
   let content;
   if (loading) {
     content = (
-      <div className="flex w-full items-center justify-center py-16 text-lg font-medium text-gray-400">
-        Loading news…
+      <div className="flex w-full items-center justify-center py-16">
+        <span className="inline-block size-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
       </div>
     );
   } else if (error) {
@@ -251,8 +252,8 @@ export function News() {
     <section className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-4 px-4 py-12">
       {content}
       {loadingMore && (
-        <div className="flex w-full items-center justify-center py-8 text-base font-medium text-blue-400">
-          Loading more…
+        <div className="flex w-full items-center justify-center py-16">
+          <span className="inline-block size-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
         </div>
       )}
       {!hasMore && !loading && news.length > 0 && (
