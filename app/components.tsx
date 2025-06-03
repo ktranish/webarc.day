@@ -22,6 +22,37 @@ function Header() {
   );
 }
 
+function NewsletterCTA() {
+  return (
+    <div className="relative mx-auto flex w-full flex-col gap-y-4 rounded-3xl border border-blue-100 bg-gradient-to-br from-blue-50/60 to-white p-8 backdrop-blur-sm">
+      <div className="flex flex-col gap-y-2">
+        <h2 className="text-xl font-semibold tracking-tight text-gray-900 sm:text-2xl">
+          Get Daily Updates
+        </h2>
+        <p className="text-sm text-gray-600 sm:text-base">
+          Stay in the loop with the latest web development news, delivered
+          straight to your inbox.
+        </p>
+      </div>
+      <form className="flex w-full flex-col gap-3">
+        <input
+          type="email"
+          placeholder="Enter your email"
+          className="flex-1 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-200 focus:ring-2 focus:ring-blue-100 focus:outline-none"
+          required
+        />
+        <button
+          type="submit"
+          className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+        >
+          Subscribe
+        </button>
+      </form>
+      <p className="text-xs text-gray-400">No spam, unsubscribe anytime.</p>
+    </div>
+  );
+}
+
 function AdSlot() {
   return (
     <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-blue-100 bg-gradient-to-br from-blue-50/60 to-white px-4 py-20 text-center">
@@ -45,6 +76,8 @@ type NewsItem = {
   date: string;
 };
 
+type GridItem = NewsItem | { __adSlot: true } | { __newsletter: true };
+
 export function News() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -55,6 +88,9 @@ export function News() {
     {},
   );
   const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [newsletterSlotIndex, setNewsletterSlotIndex] = useState<number | null>(
+    null,
+  );
 
   // Initial fetch
   useEffect(() => {
@@ -66,6 +102,12 @@ export function News() {
         setHasMore(data.hasMore);
         setNextCursor(data.nextCursor);
         setLoading(false);
+        // Set newsletter slot index after first load
+        if (data.posts.length > 0) {
+          setNewsletterSlotIndex(
+            Math.floor(Math.random() * (data.posts.length - 1)) + 1,
+          );
+        }
       })
       .catch((e) => {
         if (e instanceof Error) {
@@ -174,11 +216,22 @@ export function News() {
       const items = newsByDate[date];
       // Use persistent ad slot index for this date
       const adSlotIndex = adSlotIndexes[date] ?? 0;
-      const rowWithAd = [
+      const rowWithAd: GridItem[] = [
         ...items.slice(0, adSlotIndex),
         { __adSlot: true },
         ...items.slice(adSlotIndex),
       ];
+
+      // Insert newsletter CTA if this is the right date section
+      const shouldInsertNewsletter =
+        newsletterSlotIndex !== null &&
+        i === Math.floor(newsletterSlotIndex / items.length);
+
+      if (shouldInsertNewsletter) {
+        const localIndex = newsletterSlotIndex % items.length;
+        rowWithAd.splice(localIndex, 0, { __newsletter: true });
+      }
+
       return (
         <Fragment key={date}>
           <div className="flex flex-col gap-y-4">
@@ -195,6 +248,8 @@ export function News() {
               {rowWithAd.map((item, idx) =>
                 "__adSlot" in item ? (
                   <AdSlot key={`adslot-${date}-${idx}`} />
+                ) : "__newsletter" in item ? (
+                  <NewsletterCTA key={`newsletter-${date}-${idx}`} />
                 ) : (
                   <Link
                     key={item.title}
