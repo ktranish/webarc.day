@@ -1,4 +1,5 @@
 import client from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
 
 const REDDIT_API = "https://www.reddit.com/r/webdev/new.json?limit=10";
 
@@ -26,6 +27,20 @@ interface FormattedPost {
   link: string;
   date: string;
   id: string;
+  _timestamp: number;
+}
+
+function createObjectIdFromTimestamp(
+  timestamp: number,
+  source: string,
+): ObjectId {
+  const hexTimestamp = timestamp.toString(16).padStart(8, "0");
+  // Use source name to generate consistent remaining bytes
+  const sourceHash = source
+    .split("")
+    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const sourceHex = sourceHash.toString(16).padStart(16, "0");
+  return new ObjectId(hexTimestamp + sourceHex);
 }
 
 export async function GET() {
@@ -44,37 +59,47 @@ export async function GET() {
     const posts = data.data.children.map((child) => child.data);
 
     // Format posts to match local news structure
-    const formatted: FormattedPost[] = posts.map((post) => ({
-      favicon: `https://www.google.com/s2/favicons?domain=reddit.com&sz=64`,
-      title: post.title,
-      description: post.selftext ? post.selftext.slice(0, 180) : post.title,
-      category: "webdev",
-      link: `https://reddit.com${post.permalink}`,
-      date: post.created_utc
-        ? new Date(post.created_utc * 1000).toISOString().split("T")[0]
-        : new Date().toISOString().split("T")[0],
-      id: post.id,
-    }));
+    const formatted: FormattedPost[] = posts.map((post) => {
+      // Get timestamp in seconds
+      const timestamp = post.created_utc || Math.floor(Date.now() / 1000);
+
+      return {
+        favicon: `https://www.google.com/s2/favicons?domain=reddit.com&sz=64`,
+        title: post.title,
+        description: post.selftext ? post.selftext.slice(0, 180) : post.title,
+        category: "webdev",
+        link: `https://reddit.com${post.permalink}`,
+        date: new Date(timestamp * 1000).toISOString().split("T")[0],
+        id: post.id,
+        _timestamp: timestamp, // Store raw timestamp for ObjectId creation
+      };
+    });
 
     // Insert posts into MongoDB
     const db = client.db("webarc");
     const collection = db.collection("posts");
 
-    // Upsert by id to avoid duplicates
+    // Upsert by id to avoid duplicates, using custom ObjectId
     const ops = formatted.map((post) =>
       collection.updateOne(
         { id: post.id },
-        { $set: post, $setOnInsert: { draft: true } },
+        {
+          $set: {
+            ...post,
+            _id: createObjectIdFromTimestamp(post._timestamp, "reddit"),
+          },
+          $setOnInsert: { draft: true },
+        },
         { upsert: true },
       ),
     );
     await Promise.all(ops);
 
-    // Return the formatted posts (without id)
+    // Return the formatted posts (without id and _timestamp)
     return new Response(
       JSON.stringify(
         formatted.map((post) => {
-          const { id, ...rest } = post;
+          const { id, _timestamp, ...rest } = post;
           return rest;
         }),
       ),
