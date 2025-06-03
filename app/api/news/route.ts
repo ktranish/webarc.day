@@ -1,5 +1,5 @@
-import { NextRequest } from "next/server";
 import client from "@/lib/mongodb";
+import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
     const skip = parseInt(searchParams.get("skip") || "0", 10);
 
     const posts = await collection
-      .find({}, { projection: { _id: 0 } })
+      .find({ draft: false }, { projection: { _id: 0 } })
       .sort({ date: -1 })
       .skip(skip)
       .limit(limit)
@@ -19,12 +19,10 @@ export async function GET(req: NextRequest) {
     const total = await collection.countDocuments();
     const hasMore = skip + posts.length < total;
 
-    return new Response(
-      JSON.stringify({ posts, hasMore }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    return new Response(JSON.stringify({ posts, hasMore }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (e: any) {
     return new Response(JSON.stringify({ error: e.message }), { status: 500 });
   }

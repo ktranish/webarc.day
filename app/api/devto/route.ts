@@ -31,6 +31,7 @@ export async function GET(req: NextRequest) {
           ? post.published_at.split("T")[0]
           : new Date().toISOString().split("T")[0],
         id: post.id, // keep for upsert
+        draft: true,
       };
     });
 
