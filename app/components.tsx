@@ -4,7 +4,7 @@ import { AppImage } from "@/components/app-image";
 import { categoryGradients } from "@/constants";
 import { cn } from "@/lib/utils";
 import { NewsItem } from "@/types";
-import { ExternalLink, Megaphone } from "lucide-react";
+import { Megaphone } from "lucide-react";
 import Link from "next/link";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -350,22 +350,18 @@ export function News() {
                     href={item.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group/card animate-fade-in block w-full min-w-[260px] flex-1 rounded-3xl focus:ring-2 focus:ring-blue-200 focus:outline-none"
+                    className="group/card animate-fade-in block h-fit w-full min-w-[260px] flex-1 overflow-hidden rounded-3xl focus:ring-2 focus:ring-blue-200 focus:outline-none"
                   >
                     <div
                       className={cn(
                         categoryGradients[
                           item.category as keyof typeof categoryGradients
                         ] ?? "from-gray-50 to-gray-100",
-                        "relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-gray-100 bg-gradient-to-br p-6 backdrop-blur-sm transition",
+                        "relative flex flex-col gap-4 overflow-hidden rounded-3xl bg-gradient-to-br p-6 backdrop-blur-sm transition",
                       )}
                     >
-                      <ExternalLink
-                        className="absolute top-4 right-4 h-4 w-4 text-gray-300 transition-colors group-hover/card:text-blue-400"
-                        aria-label="External link"
-                      />
-                      <div className="flex h-12 w-12 items-center justify-center rounded-xl">
-                        <div className="relative h-8 w-8">
+                      <div className="flex size-8 items-center justify-center rounded-xl">
+                        <div className="relative size-8">
                           <AppImage
                             src={item.favicon}
                             alt={item.title + " favicon"}
