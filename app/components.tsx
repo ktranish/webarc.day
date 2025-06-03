@@ -4,7 +4,7 @@ import { AppImage } from "@/components/app-image";
 import { categoryGradients } from "@/constants";
 import { ExternalLink, Megaphone } from "lucide-react";
 import Link from "next/link";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 
 function Header() {
   return (
@@ -198,6 +198,7 @@ export function News() {
   const [newsletterSlotIndex, setNewsletterSlotIndex] = useState<number | null>(
     null,
   );
+  const observerTarget = useRef<HTMLDivElement>(null);
 
   // Initial fetch
   useEffect(() => {
@@ -222,22 +223,21 @@ export function News() {
       });
   }, []);
 
-  // Infinite scroll
+  // Infinite scroll with Intersection Observer
   useEffect(() => {
     if (!hasMore || loading || loadingMore) return;
-    const handleScroll = () => {
-      if (
-        window.innerHeight + window.scrollY >=
-          document.body.offsetHeight - 400 &&
-        !loadingMore &&
-        hasMore &&
-        nextCursor
-      ) {
-        setLoadingMore(true);
-        fetch(`/api/news?cursor=${encodeURIComponent(nextCursor)}`)
-          .then((res) => res.json())
-          .then((data) => {
-            // Deduplicate by link (or add by _id if available)
+
+    const observer = new IntersectionObserver(
+      async (entries) => {
+        if (entries[0]?.isIntersecting && hasMore && nextCursor) {
+          setLoadingMore(true);
+          try {
+            const res = await fetch(
+              `/api/news?cursor=${encodeURIComponent(nextCursor)}`,
+            );
+            const data = await res.json();
+
+            // Deduplicate by link
             setNews((prev) => {
               const seen = new Set(prev.map((p) => p.link));
               return [
@@ -247,15 +247,27 @@ export function News() {
             });
             setHasMore(data.hasMore);
             setNextCursor(data.nextCursor);
+          } catch (error) {
+            console.error("Error loading more news:", error);
+          } finally {
             setLoadingMore(false);
-          })
-          .catch(() => {
-            setLoadingMore(false);
-          });
+          }
+        }
+      },
+      { threshold: 1.0 },
+    );
+
+    const currentTarget = observerTarget.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
       }
+      observer.disconnect();
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
   }, [hasMore, loading, loadingMore, nextCursor]);
 
   // Group news by date (descending)
