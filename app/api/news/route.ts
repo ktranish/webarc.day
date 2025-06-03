@@ -1,3 +1,4 @@
+import { LIMIT } from "@/constants";
 import client from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { NextRequest } from "next/server";
@@ -31,7 +32,6 @@ export async function GET(req: NextRequest) {
     const db = client.db("webarc");
     const collection = db.collection<MongoPost>("posts");
     const { searchParams } = new URL(req.url);
-    const limit = 6;
     const cursor = searchParams.get("cursor");
 
     const query: MongoQuery = { draft: false };
@@ -42,16 +42,16 @@ export async function GET(req: NextRequest) {
     const posts = await collection
       .find(query, { projection: { _id: 0 } })
       .sort({ _id: -1 })
-      .limit(limit)
+      .limit(LIMIT)
       .toArray();
 
     // Fetch the _id of the last post for the next cursor
     const rawPosts = await collection
       .find(query)
       .sort({ _id: -1 })
-      .limit(limit)
+      .limit(LIMIT)
       .toArray();
-    const hasMore = rawPosts.length === limit;
+    const hasMore = rawPosts.length === LIMIT;
     const nextCursor = hasMore
       ? rawPosts[rawPosts.length - 1]._id.toString()
       : null;
