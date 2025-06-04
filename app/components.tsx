@@ -5,6 +5,7 @@ import { categoryGradients } from "@/constants";
 import { cn } from "@/lib/utils";
 import { NewsItem } from "@/types";
 import { Megaphone } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -336,56 +337,88 @@ export function News() {
             </div>
 
             <div className="grid w-full grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {itemsWithAds.map((item, index) => {
-                if (item === "ad") {
-                  return <AdSlot key={`ad-${date}-${index}`} />;
-                }
-                if (item === "newsletter") {
-                  return <NewsletterCTA key={`newsletter-${date}-${index}`} />;
-                }
-                return (
-                  <Link
-                    key={item.title}
-                    href={item.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group/card animate-fade-in block h-fit w-full min-w-[260px] flex-1 overflow-hidden rounded-3xl focus:ring-2 focus:ring-blue-200 focus:outline-none"
-                  >
-                    <div
-                      className={cn(
-                        categoryGradients[
-                          item.category as keyof typeof categoryGradients
-                        ] ?? "from-gray-50 to-gray-100",
-                        "relative flex flex-col gap-4 overflow-hidden rounded-3xl bg-gradient-to-br p-6 backdrop-blur-sm transition",
-                      )}
+              <AnimatePresence mode="popLayout">
+                {itemsWithAds.map((item, index) => {
+                  if (item === "ad") {
+                    return (
+                      <motion.div
+                        key={`ad-${date}-${index}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        layout
+                      >
+                        <AdSlot />
+                      </motion.div>
+                    );
+                  }
+                  if (item === "newsletter") {
+                    return (
+                      <motion.div
+                        key={`newsletter-${date}-${index}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        layout
+                      >
+                        <NewsletterCTA />
+                      </motion.div>
+                    );
+                  }
+                  return (
+                    <motion.div
+                      key={item.title}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      layout
                     >
-                      <div className="flex size-8 items-center justify-center rounded-xl">
-                        <div className="relative size-8">
-                          <AppImage
-                            src={item.favicon}
-                            alt={item.title + " favicon"}
-                            className="rounded-lg border border-gray-100 bg-white object-contain"
-                          />
+                      <Link
+                        href={item.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group/card animate-fade-in block h-fit w-full min-w-[260px] flex-1 overflow-hidden rounded-3xl focus:ring-2 focus:ring-blue-200 focus:outline-none"
+                      >
+                        <div
+                          className={cn(
+                            categoryGradients[
+                              item.category as keyof typeof categoryGradients
+                            ] ?? "from-gray-50 to-gray-100",
+                            "relative flex flex-col gap-4 overflow-hidden rounded-3xl bg-gradient-to-br p-6 backdrop-blur-sm transition",
+                          )}
+                        >
+                          <div className="flex size-8 items-center justify-center rounded-xl">
+                            <div className="relative size-8">
+                              <AppImage
+                                src={item.favicon}
+                                alt={item.title + " favicon"}
+                                className="rounded-lg border border-gray-100 bg-white object-contain"
+                              />
+                            </div>
+                          </div>
+                          <div className="flex flex-col gap-2">
+                            <h3
+                              className="font-semibold tracking-tight text-gray-900 sm:text-lg"
+                              dangerouslySetInnerHTML={{
+                                __html: item.title,
+                              }}
+                            />
+                            <p
+                              className="text-sm text-gray-600"
+                              dangerouslySetInnerHTML={{
+                                __html: item.description,
+                              }}
+                            />
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <h3
-                          className="font-semibold tracking-tight text-gray-900 sm:text-lg"
-                          dangerouslySetInnerHTML={{
-                            __html: item.title,
-                          }}
-                        />
-                        <p
-                          className="text-sm text-gray-600"
-                          dangerouslySetInnerHTML={{
-                            __html: item.description,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })}
+                      </Link>
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
             </div>
             {i !== dateOrder.length - 1 && (
               <div className="mt-4 flex h-8 w-full items-center">

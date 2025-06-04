@@ -1,4 +1,5 @@
 export type NewsItem = {
+  id: string;
   favicon: string;
   title: string;
   description: string;
