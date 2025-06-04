@@ -125,7 +125,26 @@ function NewsletterCTA() {
         >
           {loading ? "Subscribing..." : "Subscribe"}
         </button>
-        <p className="text-xs text-gray-400">No spam, unsubscribe anytime.</p>
+        <p className="text-xs text-gray-400">
+          This site is protected by reCAPTCHA and the Google
+          <a
+            href="https://policies.google.com/privacy"
+            className="mx-1 text-blue-500"
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+          >
+            Privacy Policy
+          </a>{" "}
+          and
+          <a
+            href="https://policies.google.com/terms"
+            className="mx-1 text-blue-500"
+            rel="noopener noreferrer nofollow"
+          >
+            Terms of Service
+          </a>{" "}
+          apply.
+        </p>
         {success && <p className="text-xs text-green-500">{success}</p>}
         {error && <p className="text-xs text-red-500">{error}</p>}
       </form>
@@ -643,7 +662,7 @@ export function News() {
                       <Link
                         href={item.link}
                         target="_blank"
-                        rel="noopener noreferrer"
+                        rel="noopener noreferrer nofollow"
                         className="group/card animate-fade-in block h-fit w-full min-w-[260px] flex-1 overflow-hidden rounded-3xl focus:ring-2 focus:ring-blue-200 focus:outline-none"
                       >
                         <div
