@@ -345,7 +345,7 @@ function Analytics() {
               <TrendingUp
                 className={cn(
                   "h-3 w-3",
-                  metrics.dailyGrowth.visitors >= 0
+                  metrics.periodGrowth.visitors >= 0
                     ? "text-green-500"
                     : "rotate-180 text-red-500",
                 )}
@@ -353,13 +353,13 @@ function Analytics() {
               <span
                 className={cn(
                   "text-xs font-medium",
-                  metrics.dailyGrowth.visitors >= 0
+                  metrics.periodGrowth.visitors >= 0
                     ? "text-green-500"
                     : "text-red-500",
                 )}
               >
-                {metrics.dailyGrowth.visitors > 0 ? "+" : ""}
-                {metrics.dailyGrowth.visitors}% daily growth
+                {metrics.periodGrowth.visitors > 0 ? "+" : ""}
+                {metrics.periodGrowth.visitors}% vs last period
               </span>
             </div>
           </div>
@@ -389,7 +389,7 @@ function Analytics() {
               <TrendingUp
                 className={cn(
                   "h-3 w-3",
-                  metrics.dailyGrowth.pageviews >= 0
+                  metrics.periodGrowth.pageviews >= 0
                     ? "text-green-500"
                     : "rotate-180 text-red-500",
                 )}
@@ -397,13 +397,13 @@ function Analytics() {
               <span
                 className={cn(
                   "text-xs font-medium",
-                  metrics.dailyGrowth.pageviews >= 0
+                  metrics.periodGrowth.pageviews >= 0
                     ? "text-green-500"
                     : "text-red-500",
                 )}
               >
-                {metrics.dailyGrowth.pageviews > 0 ? "+" : ""}
-                {metrics.dailyGrowth.pageviews}% daily growth
+                {metrics.periodGrowth.pageviews > 0 ? "+" : ""}
+                {metrics.periodGrowth.pageviews}% vs last period
               </span>
             </div>
           </div>
