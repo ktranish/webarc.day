@@ -42,7 +42,7 @@ export async function GET() {
     const currentDailyPageviews = currentMetrics.pageviews / currentDays;
     const lastDailyPageviews = lastMetrics.pageviews / lastDays;
 
-    // Calculate daily growth rates
+    // Calculate daily growth
     const dailyVisitorGrowth = calculateGrowth(
       currentDailyVisitors,
       lastDailyVisitors,
@@ -55,7 +55,7 @@ export async function GET() {
     return NextResponse.json({
       visitors: currentMetrics.visitors,
       pageviews: currentMetrics.pageviews,
-      growth: dailyVisitorGrowth, // Use daily growth for more accurate comparison
+      growth: dailyVisitorGrowth,
       dailyMetrics: {
         visitors: Math.round(currentDailyVisitors),
         pageviews: Math.round(currentDailyPageviews),
@@ -63,6 +63,10 @@ export async function GET() {
       periodGrowth: {
         visitors: visitorGrowth,
         pageviews: pageviewGrowth,
+      },
+      dailyGrowth: {
+        visitors: dailyVisitorGrowth,
+        pageviews: dailyPageviewGrowth,
       },
       dateRanges: {
         current: {

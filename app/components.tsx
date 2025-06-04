@@ -221,7 +221,28 @@ function Analytics() {
   const [metrics, setMetrics] = useState<{
     visitors: number;
     pageviews: number;
-    growth: number;
+    dailyMetrics: {
+      visitors: number;
+      pageviews: number;
+    };
+    periodGrowth: {
+      visitors: number;
+      pageviews: number;
+    };
+    dailyGrowth: {
+      visitors: number;
+      pageviews: number;
+    };
+    dateRanges: {
+      current: {
+        start: string;
+        end: string;
+      };
+      last: {
+        start: string;
+        end: string;
+      };
+    };
   } | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -248,8 +269,8 @@ function Analytics() {
           <div className="shimmer h-6 w-24 rounded-lg bg-gray-100" />
           <div className="shimmer h-4 w-24 rounded-lg bg-gray-100" />
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {Array.from({ length: 3 }).map((_, i) => (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {Array.from({ length: 2 }).map((_, i) => (
             <div
               key={i}
               className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-4"
@@ -258,9 +279,19 @@ function Analytics() {
                 <div className="shimmer h-8 w-8 rounded-lg bg-gray-100" />
                 <div className="shimmer h-4 w-16 rounded-lg bg-gray-100" />
               </div>
-              <div className="flex items-baseline gap-2">
-                <div className="shimmer h-8 w-24 rounded-lg bg-gray-100" />
-                <div className="shimmer h-4 w-16 rounded-lg bg-gray-100" />
+              <div className="flex flex-col gap-1">
+                <div className="flex items-baseline gap-2">
+                  <div className="shimmer h-8 w-24 rounded-lg bg-gray-100" />
+                  <div className="shimmer h-4 w-12 rounded-lg bg-gray-100" />
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <div className="shimmer h-4 w-16 rounded-lg bg-gray-100" />
+                  <div className="shimmer h-3 w-12 rounded-lg bg-gray-100" />
+                </div>
+                <div className="mt-1 flex items-center gap-1">
+                  <div className="shimmer h-3 w-3 rounded-lg bg-gray-100" />
+                  <div className="shimmer h-3 w-20 rounded-lg bg-gray-100" />
+                </div>
               </div>
             </div>
           ))}
@@ -271,15 +302,25 @@ function Analytics() {
 
   if (!metrics) return null;
 
+  // Format date range for display
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  const dateRange = `${formatDate(metrics.dateRanges.current.start)} - ${formatDate(metrics.dateRanges.current.end)}`;
+
   return (
     <div className="mt-12 flex flex-col gap-4 px-4">
       <div className="flex items-center justify-between">
         <h2 className="text-base font-semibold tracking-tight text-gray-900">
           Analytics
         </h2>
-        <span className="text-sm text-gray-500">Last 30 days</span>
+        <span className="text-sm text-gray-500">{dateRange}</span>
       </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-4">
           <div className="flex items-center gap-2">
             <div className="rounded-lg bg-blue-50 p-2">
@@ -287,11 +328,40 @@ function Analytics() {
             </div>
             <span className="text-sm font-medium text-gray-600">Visitors</span>
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-semibold text-gray-900">
-              {metrics.visitors.toLocaleString()}
-            </span>
-            <span className="text-sm text-gray-500">this month</span>
+          <div className="flex flex-col gap-1">
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-semibold text-gray-900">
+                {metrics.visitors.toLocaleString()}
+              </span>
+              <span className="text-sm text-gray-500">total</span>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-sm text-gray-600">
+                {metrics.dailyMetrics.visitors.toLocaleString()}
+              </span>
+              <span className="text-xs text-gray-500">per day</span>
+            </div>
+            <div className="mt-1 flex items-center gap-1">
+              <TrendingUp
+                className={cn(
+                  "h-3 w-3",
+                  metrics.dailyGrowth.visitors >= 0
+                    ? "text-green-500"
+                    : "rotate-180 text-red-500",
+                )}
+              />
+              <span
+                className={cn(
+                  "text-xs font-medium",
+                  metrics.dailyGrowth.visitors >= 0
+                    ? "text-green-500"
+                    : "text-red-500",
+                )}
+              >
+                {metrics.dailyGrowth.visitors > 0 ? "+" : ""}
+                {metrics.dailyGrowth.visitors}% daily growth
+              </span>
+            </div>
           </div>
         </div>
 
@@ -302,27 +372,40 @@ function Analytics() {
             </div>
             <span className="text-sm font-medium text-gray-600">Pageviews</span>
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-semibold text-gray-900">
-              {metrics.pageviews.toLocaleString()}
-            </span>
-            <span className="text-sm text-gray-500">this month</span>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-4">
-          <div className="flex items-center gap-2">
-            <div className="rounded-lg bg-blue-50 p-2">
-              <TrendingUp className="h-4 w-4 text-blue-600" />
+          <div className="flex flex-col gap-1">
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-semibold text-gray-900">
+                {metrics.pageviews.toLocaleString()}
+              </span>
+              <span className="text-sm text-gray-500">total</span>
             </div>
-            <span className="text-sm font-medium text-gray-600">Growth</span>
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-semibold text-gray-900">
-              {metrics.growth > 0 ? "+" : ""}
-              {metrics.growth}%
-            </span>
-            <span className="text-sm text-gray-500">vs last month</span>
+            <div className="flex items-baseline gap-2">
+              <span className="text-sm text-gray-600">
+                {metrics.dailyMetrics.pageviews.toLocaleString()}
+              </span>
+              <span className="text-xs text-gray-500">per day</span>
+            </div>
+            <div className="mt-1 flex items-center gap-1">
+              <TrendingUp
+                className={cn(
+                  "h-3 w-3",
+                  metrics.dailyGrowth.pageviews >= 0
+                    ? "text-green-500"
+                    : "rotate-180 text-red-500",
+                )}
+              />
+              <span
+                className={cn(
+                  "text-xs font-medium",
+                  metrics.dailyGrowth.pageviews >= 0
+                    ? "text-green-500"
+                    : "text-red-500",
+                )}
+              >
+                {metrics.dailyGrowth.pageviews > 0 ? "+" : ""}
+                {metrics.dailyGrowth.pageviews}% daily growth
+              </span>
+            </div>
           </div>
         </div>
       </div>
