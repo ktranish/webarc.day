@@ -204,6 +204,11 @@ export function News() {
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [prefetchedData, setPrefetchedData] = useState<{
+    posts: NewsItem[];
+    nextCursor: string | null;
+    hasMore: boolean;
+  } | null>(null);
   const observerTarget = useRef<HTMLDivElement>(null);
 
   // Initial fetch
@@ -225,6 +230,25 @@ export function News() {
       });
   }, []);
 
+  // Prefetch next batch when we have a cursor
+  useEffect(() => {
+    if (!nextCursor || loadingMore || !hasMore) return;
+
+    const prefetchNextBatch = async () => {
+      try {
+        const res = await fetch(
+          `/api/news?cursor=${encodeURIComponent(nextCursor)}`,
+        );
+        const data = await res.json();
+        setPrefetchedData(data);
+      } catch (error) {
+        console.error("Error prefetching next batch:", error);
+      }
+    };
+
+    prefetchNextBatch();
+  }, [nextCursor, loadingMore, hasMore]);
+
   // Infinite scroll with Intersection Observer
   useEffect(() => {
     if (!hasMore || loading || loadingMore) return;
@@ -234,13 +258,21 @@ export function News() {
         if (entries[0]?.isIntersecting && hasMore && nextCursor) {
           setLoadingMore(true);
           try {
-            const res = await fetch(
-              `/api/news?cursor=${encodeURIComponent(nextCursor)}`,
-            );
-            const data = await res.json();
-            setNews((prev) => [...prev, ...data.posts]);
-            setHasMore(data.hasMore);
-            setNextCursor(data.nextCursor);
+            // Use prefetched data if available
+            if (prefetchedData) {
+              setNews((prev) => [...prev, ...prefetchedData.posts]);
+              setHasMore(prefetchedData.hasMore);
+              setNextCursor(prefetchedData.nextCursor);
+              setPrefetchedData(null);
+            } else {
+              const res = await fetch(
+                `/api/news?cursor=${encodeURIComponent(nextCursor)}`,
+              );
+              const data = await res.json();
+              setNews((prev) => [...prev, ...data.posts]);
+              setHasMore(data.hasMore);
+              setNextCursor(data.nextCursor);
+            }
           } catch (error) {
             console.error("Error loading more news:", error);
           } finally {
@@ -248,7 +280,7 @@ export function News() {
           }
         }
       },
-      { threshold: 1.0 },
+      { threshold: 0.5 }, // Trigger when 50% of the loading indicator is visible
     );
 
     const currentTarget = observerTarget.current;
@@ -262,7 +294,7 @@ export function News() {
       }
       observer.disconnect();
     };
-  }, [hasMore, loading, loadingMore, nextCursor]);
+  }, [hasMore, loading, loadingMore, nextCursor, prefetchedData]);
 
   const content = useMemo(() => {
     if (loading && news.length === 0) {
