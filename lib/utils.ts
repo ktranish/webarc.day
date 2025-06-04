@@ -50,3 +50,31 @@ export function getDateRange(monthsAgo = 0) {
 
   return [start, end];
 }
+
+export function calculateGrowth(current: number, last: number) {
+  // Handle invalid inputs
+  if (typeof current !== "number" || typeof last !== "number") {
+    return 0;
+  }
+
+  // Handle NaN and Infinity
+  if (isNaN(current) || isNaN(last) || !isFinite(current) || !isFinite(last)) {
+    return 0;
+  }
+
+  // Handle zero last value
+  if (last === 0) {
+    return current > 0 ? 100 : 0;
+  }
+
+  // Calculate growth (can be negative for decline)
+  const growth = ((current - last) / last) * 100;
+
+  // Handle very large numbers
+  if (!isFinite(growth)) {
+    return current > last ? 100 : -100;
+  }
+
+  // Round to 1 decimal place
+  return Math.round(growth * 10) / 10;
+}

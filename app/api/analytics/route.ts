@@ -1,4 +1,4 @@
-import { getDateRange, getDaysBetween } from "@/lib/utils";
+import { calculateGrowth, getDateRange, getDaysBetween } from "@/lib/utils";
 import { BetaAnalyticsDataClient } from "@google-analytics/data";
 import { NextResponse } from "next/server";
 
@@ -100,15 +100,4 @@ async function getMetrics(startDate: Date, endDate: Date) {
     visitors: Number(response.rows?.[0]?.metricValues?.[0]?.value || 0),
     pageviews: Number(response.rows?.[0]?.metricValues?.[1]?.value || 0),
   };
-}
-
-function calculateGrowth(current: number, last: number) {
-  if (last === 0) {
-    return current > 0 ? 100 : 0; // Return 0% if both periods had no visitors
-  }
-
-  const growth = ((current - last) / last) * 100;
-
-  // Round to 1 decimal place for more precision
-  return Math.round(growth * 10) / 10;
 }
