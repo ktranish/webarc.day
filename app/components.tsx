@@ -198,6 +198,80 @@ function getConsistentRandomPosition(
   return positions.sort((a, b) => a - b);
 }
 
+function FilterBar({
+  categories,
+  selectedCategories,
+  onCategoryChange,
+}: {
+  categories: string[];
+  selectedCategories: string[];
+  onCategoryChange: (category: string) => void;
+}) {
+  return (
+    <div className="-mx-4 mb-8 flex flex-col gap-6 border-b border-gray-100 bg-white/80 px-4 py-6 backdrop-blur-sm">
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <h2 className="text-base font-semibold tracking-tight text-gray-900">
+              Categories
+            </h2>
+            {selectedCategories.length > 0 && (
+              <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600">
+                {selectedCategories.length} selected
+              </span>
+            )}
+          </div>
+          {selectedCategories.length > 0 && (
+            <button
+              onClick={() => onCategoryChange("clear")}
+              className="inline-flex items-center gap-1 rounded-full bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
+            >
+              <svg
+                className="h-3 w-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+              Clear filters
+            </button>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => onCategoryChange(category)}
+              className={cn(
+                "group relative rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200",
+                selectedCategories.includes(category)
+                  ? "bg-blue-50 text-blue-600 ring-1 ring-blue-100"
+                  : "bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+              )}
+            >
+              <span className="relative z-10">{category}</span>
+              {selectedCategories.includes(category) && (
+                <motion.span
+                  layoutId="categoryBackground"
+                  className="absolute inset-0 rounded-full bg-blue-50"
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                />
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function News() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -209,7 +283,23 @@ export function News() {
     nextCursor: string | null;
     hasMore: boolean;
   } | null>(null);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const observerTarget = useRef<HTMLDivElement>(null);
+
+  // Extract unique categories
+  const categories = useMemo(() => {
+    return Array.from(new Set(news.map((item) => item.category)));
+  }, [news]);
+
+  // Filter news based on selected categories
+  const filteredNews = useMemo(() => {
+    return news.filter((item) => {
+      const categoryMatch =
+        selectedCategories.length === 0 ||
+        selectedCategories.includes(item.category);
+      return categoryMatch;
+    });
+  }, [news, selectedCategories]);
 
   // Initial fetch
   useEffect(() => {
@@ -305,16 +395,16 @@ export function News() {
       );
     }
 
-    if (!loading && news.length === 0) {
+    if (!loading && filteredNews.length === 0) {
       return (
         <div className="flex w-full items-center justify-center py-16 text-base font-medium text-gray-300">
-          No news available.
+          No news available for the selected filters.
         </div>
       );
     }
 
     // Group news by date
-    const newsByDate = news.reduce(
+    const newsByDate = filteredNews.reduce(
       (acc, item) => {
         const date = item.date;
         if (!acc[date]) acc[date] = [];
@@ -461,10 +551,27 @@ export function News() {
         </Fragment>
       );
     });
-  }, [news, loading]);
+  }, [filteredNews, loading]);
+
+  const handleCategoryChange = (category: string) => {
+    if (category === "clear") {
+      setSelectedCategories([]);
+    } else {
+      setSelectedCategories((prev) =>
+        prev.includes(category)
+          ? prev.filter((c) => c !== category)
+          : [...prev, category],
+      );
+    }
+  };
 
   return (
     <section className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-4 px-4 py-12">
+      <FilterBar
+        categories={categories}
+        selectedCategories={selectedCategories}
+        onCategoryChange={handleCategoryChange}
+      />
       {content}
       {hasMore && !loadingMore && !loading && (
         <div
@@ -474,7 +581,7 @@ export function News() {
           <span className="inline-block size-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
         </div>
       )}
-      {!hasMore && !loading && news.length > 0 && (
+      {!hasMore && !loading && filteredNews.length > 0 && (
         <div className="flex w-full items-center justify-center py-8 text-base font-medium text-gray-300">
           All news loaded.
         </div>
