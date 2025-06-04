@@ -417,19 +417,13 @@ function FilterBar({
   categories,
   selectedCategories,
   onCategoryChange,
+  loading,
 }: {
   categories: string[];
   selectedCategories: string[];
   onCategoryChange: (category: string) => void;
+  loading: boolean;
 }) {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (categories.length > 0) {
-      setLoading(false);
-    }
-  }, [categories]);
-
   if (loading) {
     return (
       <div className="mb-6 flex flex-col gap-6 border-b border-gray-100 bg-white/80 pb-10 backdrop-blur-sm">
@@ -528,20 +522,35 @@ export function News() {
     hasMore: boolean;
   } | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
   const observerTarget = useRef<HTMLDivElement>(null);
 
-  // Extract unique categories
-  const categories = useMemo(() => {
-    return Array.from(new Set(news.map((item) => item.category)));
-  }, [news]);
+  // Initial fetch of categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch("/api/categories");
+        const data = await res.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   // Filter news based on selected categories
   const filteredNews = useMemo(() => {
     return news.filter((item) => {
-      const categoryMatch =
-        selectedCategories.length === 0 ||
-        selectedCategories.includes(item.category);
-      return categoryMatch;
+      // If no categories selected, show all
+      if (selectedCategories.length === 0) return true;
+
+      // Exact match for selected categories
+      return selectedCategories.some((category) => category === item.category);
     });
   }, [news, selectedCategories]);
 
@@ -614,7 +623,7 @@ export function News() {
           }
         }
       },
-      { threshold: 0.5 }, // Trigger when 50% of the loading indicator is visible
+      { threshold: 0.5 },
     );
 
     const currentTarget = observerTarget.current;
@@ -629,6 +638,18 @@ export function News() {
       observer.disconnect();
     };
   }, [hasMore, loading, loadingMore, nextCursor, prefetchedData]);
+
+  const handleCategoryChange = (category: string) => {
+    if (category === "clear") {
+      setSelectedCategories([]);
+    } else {
+      setSelectedCategories((prev) =>
+        prev.includes(category)
+          ? prev.filter((c) => c !== category)
+          : [...prev, category],
+      );
+    }
+  };
 
   const content = useMemo(() => {
     if (loading && news.length === 0) {
@@ -797,24 +818,13 @@ export function News() {
     });
   }, [filteredNews, loading]);
 
-  const handleCategoryChange = (category: string) => {
-    if (category === "clear") {
-      setSelectedCategories([]);
-    } else {
-      setSelectedCategories((prev) =>
-        prev.includes(category)
-          ? prev.filter((c) => c !== category)
-          : [...prev, category],
-      );
-    }
-  };
-
   return (
     <section className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-4 px-4 py-12">
       <FilterBar
         categories={categories}
         selectedCategories={selectedCategories}
         onCategoryChange={handleCategoryChange}
+        loading={loadingCategories}
       />
       {content}
       {hasMore && !loadingMore && !loading && (
