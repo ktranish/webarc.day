@@ -191,30 +191,24 @@ function AdSlot() {
   );
 }
 
-function getConsistentRandomPosition(
-  date: string,
-  totalItems: number,
-  type: "ad" | "newsletter",
-): number[] {
-  // Use date as seed for consistent positions
-  const seed = date.split("-").join("");
-  const positions: number[] = [];
+function getContentSlots(totalItems: number): {
+  adSlots: number[];
+  newsletterSlots: number[];
+} {
+  const adSlots: number[] = [];
+  const newsletterSlots: number[] = [];
 
-  // Calculate number of items based on total posts
-  // For ads: 1 per 6 posts, minimum 1
-  // For newsletters: 1 per 12 posts, minimum 1
-  const numItems = Math.max(
-    1,
-    Math.floor(totalItems / (type === "ad" ? 6 : 12)),
-  );
-
-  // Generate consistent positions
-  for (let i = 0; i < numItems; i++) {
-    const position = (parseInt(seed) * (i + 1)) % (totalItems - 1);
-    positions.push(position + 1); // Add 1 to avoid placing at start
+  // Add ad slots every 8 posts
+  for (let i = 8; i <= totalItems; i += 8) {
+    adSlots.push(i);
   }
 
-  return positions.sort((a, b) => a - b);
+  // Add newsletter slots every 20 posts
+  for (let i = 20; i <= totalItems; i += 20) {
+    newsletterSlots.push(i);
+  }
+
+  return { adSlots, newsletterSlots };
 }
 
 function Analytics() {
@@ -688,20 +682,15 @@ export function News() {
       const items = newsByDate[date];
 
       // Calculate positions for ads and newsletters
-      const adPositions = getConsistentRandomPosition(date, items.length, "ad");
-      const newsletterPositions = getConsistentRandomPosition(
-        date,
-        items.length,
-        "newsletter",
-      );
+      const { adSlots, newsletterSlots } = getContentSlots(items.length);
 
       // Create array with items and insert ads/newsletters at calculated positions
       const itemsWithAds = items.reduce(
         (acc: (NewsItem | "ad" | "newsletter")[], item, index) => {
-          if (adPositions.includes(index)) {
+          if (adSlots.includes(index + 1)) {
             acc.push("ad");
           }
-          if (newsletterPositions.includes(index)) {
+          if (newsletterSlots.includes(index + 1)) {
             acc.push("newsletter");
           }
           acc.push(item);
