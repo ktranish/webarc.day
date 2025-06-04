@@ -20,3 +20,33 @@ export function slugify(text: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
+
+export function getDaysBetween(start: Date, end: Date) {
+  const diffTime = end.getTime() - start.getTime();
+  return Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 to include both start and end dates
+}
+
+export function getDateRange(monthsAgo = 0) {
+  const end = new Date();
+  const start = new Date();
+
+  // Set end date to end of current day
+  end.setHours(23, 59, 59, 999);
+
+  // Set start date to beginning of current month
+  start.setDate(1);
+  start.setHours(0, 0, 0, 0);
+
+  // If looking at previous period, adjust both dates
+  if (monthsAgo > 0) {
+    // First set the end date to the last day of the previous month
+    end.setMonth(end.getMonth() - monthsAgo);
+    end.setDate(0); // This sets to last day of previous month
+
+    // Then set the start date to the first day of that same month
+    start.setMonth(end.getMonth());
+    start.setDate(1);
+  }
+
+  return [start, end];
+}
