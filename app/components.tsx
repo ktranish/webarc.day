@@ -4,7 +4,7 @@ import { AppImage } from "@/components/app-image";
 import { categoryGradients } from "@/constants";
 import { cn } from "@/lib/utils";
 import { NewsItem } from "@/types";
-import { Megaphone, Users, Eye, TrendingUp } from "lucide-react";
+import { Eye, Megaphone, TrendingUp, Users } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
@@ -198,6 +198,119 @@ function getConsistentRandomPosition(
   return positions.sort((a, b) => a - b);
 }
 
+function Analytics() {
+  const [metrics, setMetrics] = useState<{
+    visitors: number;
+    pageviews: number;
+    growth: number;
+  } | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      try {
+        const res = await fetch("/api/analytics");
+        const data = await res.json();
+        setMetrics(data);
+      } catch (error) {
+        console.error("Error fetching analytics:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnalytics();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="mt-12 flex flex-col gap-4 px-4">
+        <div className="flex items-center justify-between">
+          <div className="shimmer h-6 w-24 rounded-lg bg-gray-100" />
+          <div className="shimmer h-4 w-24 rounded-lg bg-gray-100" />
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div
+              key={i}
+              className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-4"
+            >
+              <div className="flex items-center gap-2">
+                <div className="shimmer h-8 w-8 rounded-lg bg-gray-100" />
+                <div className="shimmer h-4 w-16 rounded-lg bg-gray-100" />
+              </div>
+              <div className="flex items-baseline gap-2">
+                <div className="shimmer h-8 w-24 rounded-lg bg-gray-100" />
+                <div className="shimmer h-4 w-16 rounded-lg bg-gray-100" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (!metrics) return null;
+
+  return (
+    <div className="mt-12 flex flex-col gap-4 px-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-base font-semibold tracking-tight text-gray-900">
+          Analytics
+        </h2>
+        <span className="text-sm text-gray-500">Last 30 days</span>
+      </div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-4">
+          <div className="flex items-center gap-2">
+            <div className="rounded-lg bg-blue-50 p-2">
+              <Users className="h-4 w-4 text-blue-600" />
+            </div>
+            <span className="text-sm font-medium text-gray-600">Visitors</span>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl font-semibold text-gray-900">
+              {metrics.visitors.toLocaleString()}
+            </span>
+            <span className="text-sm text-gray-500">this month</span>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-4">
+          <div className="flex items-center gap-2">
+            <div className="rounded-lg bg-blue-50 p-2">
+              <Eye className="h-4 w-4 text-blue-600" />
+            </div>
+            <span className="text-sm font-medium text-gray-600">Pageviews</span>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl font-semibold text-gray-900">
+              {metrics.pageviews.toLocaleString()}
+            </span>
+            <span className="text-sm text-gray-500">this month</span>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-4">
+          <div className="flex items-center gap-2">
+            <div className="rounded-lg bg-blue-50 p-2">
+              <TrendingUp className="h-4 w-4 text-blue-600" />
+            </div>
+            <span className="text-sm font-medium text-gray-600">Growth</span>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl font-semibold text-gray-900">
+              {metrics.growth > 0 ? "+" : ""}
+              {metrics.growth}%
+            </span>
+            <span className="text-sm text-gray-500">vs last month</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function FilterBar({
   categories,
   selectedCategories,
@@ -207,6 +320,35 @@ function FilterBar({
   selectedCategories: string[];
   onCategoryChange: (category: string) => void;
 }) {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (categories.length > 0) {
+      setLoading(false);
+    }
+  }, [categories]);
+
+  if (loading) {
+    return (
+      <div className="mb-6 flex flex-col gap-6 border-b border-gray-100 bg-white/80 pb-10 backdrop-blur-sm">
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <div className="shimmer h-6 w-24 rounded-lg bg-gray-100" />
+            <div className="shimmer h-6 w-24 rounded-lg bg-gray-100" />
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="shimmer h-8 w-24 rounded-full bg-gray-100"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mb-6 flex flex-col gap-6 border-b border-gray-100 bg-white/80 pb-10 backdrop-blur-sm">
       <div className="flex flex-col gap-4">
@@ -266,101 +408,6 @@ function FilterBar({
               )}
             </button>
           ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Analytics() {
-  const [metrics, setMetrics] = useState<{
-    visitors: number;
-    pageviews: number;
-    growth: number;
-  } | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchAnalytics = async () => {
-      try {
-        const res = await fetch("/api/analytics");
-        const data = await res.json();
-        setMetrics(data);
-      } catch (error) {
-        console.error("Error fetching analytics:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAnalytics();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="h-24 animate-pulse rounded-2xl bg-gray-100" />
-        ))}
-      </div>
-    );
-  }
-
-  if (!metrics) return null;
-
-  return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-base font-semibold tracking-tight text-gray-900">
-          Analytics
-        </h2>
-        <span className="text-sm text-gray-500">Last 30 days</span>
-      </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-4">
-          <div className="flex items-center gap-2">
-            <div className="rounded-lg bg-blue-50 p-2">
-              <Users className="h-4 w-4 text-blue-600" />
-            </div>
-            <span className="text-sm font-medium text-gray-600">Visitors</span>
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-semibold text-gray-900">
-              {metrics.visitors.toLocaleString()}
-            </span>
-            <span className="text-sm text-gray-500">this month</span>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-4">
-          <div className="flex items-center gap-2">
-            <div className="rounded-lg bg-blue-50 p-2">
-              <Eye className="h-4 w-4 text-blue-600" />
-            </div>
-            <span className="text-sm font-medium text-gray-600">Pageviews</span>
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-semibold text-gray-900">
-              {metrics.pageviews.toLocaleString()}
-            </span>
-            <span className="text-sm text-gray-500">this month</span>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-4">
-          <div className="flex items-center gap-2">
-            <div className="rounded-lg bg-blue-50 p-2">
-              <TrendingUp className="h-4 w-4 text-blue-600" />
-            </div>
-            <span className="text-sm font-medium text-gray-600">Growth</span>
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-semibold text-gray-900">
-              {metrics.growth > 0 ? "+" : ""}
-              {metrics.growth}%
-            </span>
-            <span className="text-sm text-gray-500">vs last month</span>
-          </div>
         </div>
       </div>
     </div>
@@ -662,7 +709,6 @@ export function News() {
 
   return (
     <section className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-4 px-4 py-12">
-      <Analytics />
       <FilterBar
         categories={categories}
         selectedCategories={selectedCategories}
@@ -698,9 +744,8 @@ export function Landing() {
       }}
     >
       <main className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-4 px-4 py-16">
-        <div className="flex flex-col items-center gap-y-2">
-          <Header />
-        </div>
+        <Header />
+        <Analytics />
         <News />
         <Dock />
       </main>
