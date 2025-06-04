@@ -96,10 +96,13 @@ function getDateRange(monthsAgo = 0) {
 
   // If looking at previous period, adjust both dates
   if (monthsAgo > 0) {
-    start.setMonth(start.getMonth() - monthsAgo);
+    // First set the end date to the last day of the previous month
     end.setMonth(end.getMonth() - monthsAgo);
-    // Set end to last day of previous month
-    end.setDate(0);
+    end.setDate(0); // This sets to last day of previous month
+
+    // Then set the start date to the first day of that same month
+    start.setMonth(end.getMonth());
+    start.setDate(1);
   }
 
   return [start, end];
