@@ -401,7 +401,7 @@ export function News() {
                   }
                   return (
                     <motion.div
-                      key={item.title}
+                      key={index}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
