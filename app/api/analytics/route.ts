@@ -13,20 +13,66 @@ const analyticsDataClient = new BetaAnalyticsDataClient({
 
 export async function GET() {
   try {
-    const [startDate, endDate] = getDateRange();
-    const [lastStartDate, lastEndDate] = getDateRange(1);
+    const [currentStart, currentEnd] = getDateRange();
+    const [lastStart, lastEnd] = getDateRange(1);
 
+    // Get metrics for both periods
     const [currentMetrics, lastMetrics] = await Promise.all([
-      getMetrics(startDate, endDate),
-      getMetrics(lastStartDate, lastEndDate),
+      getMetrics(currentStart, currentEnd),
+      getMetrics(lastStart, lastEnd),
     ]);
 
-    const growth = calculateGrowth(currentMetrics, lastMetrics);
+    // Calculate growth rates
+    const visitorGrowth = calculateGrowth(
+      currentMetrics.visitors,
+      lastMetrics.visitors,
+    );
+    const pageviewGrowth = calculateGrowth(
+      currentMetrics.pageviews,
+      lastMetrics.pageviews,
+    );
+
+    // Calculate average daily metrics for more accurate comparison
+    const currentDays = getDaysBetween(currentStart, currentEnd);
+    const lastDays = getDaysBetween(lastStart, lastEnd);
+
+    const currentDailyVisitors = currentMetrics.visitors / currentDays;
+    const lastDailyVisitors = lastMetrics.visitors / lastDays;
+    const currentDailyPageviews = currentMetrics.pageviews / currentDays;
+    const lastDailyPageviews = lastMetrics.pageviews / lastDays;
+
+    // Calculate daily growth rates
+    const dailyVisitorGrowth = calculateGrowth(
+      currentDailyVisitors,
+      lastDailyVisitors,
+    );
+    const dailyPageviewGrowth = calculateGrowth(
+      currentDailyPageviews,
+      lastDailyPageviews,
+    );
 
     return NextResponse.json({
       visitors: currentMetrics.visitors,
       pageviews: currentMetrics.pageviews,
-      growth,
+      growth: dailyVisitorGrowth, // Use daily growth for more accurate comparison
+      dailyMetrics: {
+        visitors: Math.round(currentDailyVisitors),
+        pageviews: Math.round(currentDailyPageviews),
+      },
+      periodGrowth: {
+        visitors: visitorGrowth,
+        pageviews: pageviewGrowth,
+      },
+      dateRanges: {
+        current: {
+          start: currentStart.toISOString(),
+          end: currentEnd.toISOString(),
+        },
+        last: {
+          start: lastStart.toISOString(),
+          end: lastEnd.toISOString(),
+        },
+      },
     });
   } catch (error) {
     console.error("Error fetching analytics:", error);
@@ -40,11 +86,28 @@ export async function GET() {
 function getDateRange(monthsAgo = 0) {
   const end = new Date();
   const start = new Date();
-  start.setMonth(start.getMonth() - monthsAgo);
+
+  // Set end date to end of current day
+  end.setHours(23, 59, 59, 999);
+
+  // Set start date to beginning of current month
   start.setDate(1);
   start.setHours(0, 0, 0, 0);
-  end.setHours(23, 59, 59, 999);
+
+  // If looking at previous period, adjust both dates
+  if (monthsAgo > 0) {
+    start.setMonth(start.getMonth() - monthsAgo);
+    end.setMonth(end.getMonth() - monthsAgo);
+    // Set end to last day of previous month
+    end.setDate(0);
+  }
+
   return [start, end];
+}
+
+function getDaysBetween(start: Date, end: Date) {
+  const diffTime = Math.abs(end.getTime() - start.getTime());
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 to include both start and end dates
 }
 
 async function getMetrics(startDate: Date, endDate: Date) {
@@ -65,10 +128,13 @@ async function getMetrics(startDate: Date, endDate: Date) {
   };
 }
 
-function calculateGrowth(
-  current: { visitors: number },
-  last: { visitors: number },
-) {
-  if (last.visitors === 0) return 100;
-  return Math.round(((current.visitors - last.visitors) / last.visitors) * 100);
+function calculateGrowth(current: number, last: number) {
+  if (last === 0) {
+    return current > 0 ? 100 : 0; // Return 0% if both periods had no visitors
+  }
+
+  const growth = ((current - last) / last) * 100;
+
+  // Round to 1 decimal place for more precision
+  return Math.round(growth * 10) / 10;
 }
