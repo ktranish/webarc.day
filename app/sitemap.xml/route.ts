@@ -5,8 +5,8 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     const db = client.db("webarc");
-    const collection = db.collection("posts");
-    const count = await collection.countDocuments({ draft: false });
+    const collection = db.collection("articles");
+    const count = await collection.countDocuments();
 
     const totalSitemaps = Math.ceil(count / 1000);
 

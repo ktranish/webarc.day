@@ -6,8 +6,8 @@ const POSTS_PER_SITEMAP = 1000;
 
 export async function generateSitemaps() {
   const db = client.db("webarc");
-  const collection = db.collection("posts");
-  const count = await collection.countDocuments({ draft: false });
+  const collection = db.collection("articles");
+  const count = await collection.countDocuments();
 
   const totalSitemaps = Math.ceil(count / POSTS_PER_SITEMAP);
 
@@ -20,17 +20,17 @@ export default async function sitemap({
   id: number;
 }): Promise<MetadataRoute.Sitemap> {
   const db = client.db("webarc");
-  const collection = db.collection("posts");
-  const posts = await collection
-    .find({ draft: false })
+  const collection = db.collection("articles");
+  const articles = await collection
+    .find()
     .sort({ _id: -1 })
     .skip(id * POSTS_PER_SITEMAP)
     .limit(POSTS_PER_SITEMAP)
     .toArray();
 
-  return (posts || []).map((post) => ({
-    url: `${BASE_URL}/${post.slug}`,
-    lastModified: new Date(post.date),
+  return (articles || []).map((article) => ({
+    url: `${BASE_URL}/${article.slug}`,
+    lastModified: new Date(article.created_at),
     changeFrequency: "weekly" as const,
     priority: 0.7,
   }));
