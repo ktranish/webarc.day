@@ -19,6 +19,27 @@ interface Article {
   tags: string[];
 }
 
+// Force static generation
+export const dynamic = "force-static";
+
+// Generate static paths for all blog posts
+export async function generateStaticParams() {
+  try {
+    const db = client.db("webarc");
+    const collection = db.collection("articles");
+    const articles = await collection
+      .find({}, { projection: { slug: 1 } })
+      .toArray();
+
+    return articles.map((article) => ({
+      slug: article.slug,
+    }));
+  } catch (error) {
+    console.error("Error generating static paths:", error);
+    return [];
+  }
+}
+
 // Generate metadata for SEO
 export async function generateMetadata({
   params,
