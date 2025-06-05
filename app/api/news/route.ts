@@ -19,6 +19,7 @@ interface MongoPost extends Post {
 interface MongoQuery {
   draft: boolean;
   _id?: { $lt: ObjectId };
+  category?: { $in: string[] };
 }
 
 interface NewsResponse {
@@ -33,10 +34,14 @@ export async function GET(req: NextRequest) {
     const collection = db.collection<MongoPost>("posts");
     const { searchParams } = new URL(req.url);
     const cursor = searchParams.get("cursor");
+    const categories = searchParams.get("categories")?.split(",");
 
     const query: MongoQuery = { draft: false };
     if (cursor) {
       query._id = { $lt: new ObjectId(cursor) };
+    }
+    if (categories && categories.length > 0) {
+      query.category = { $in: categories };
     }
 
     const posts = await collection

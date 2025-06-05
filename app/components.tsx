@@ -585,21 +585,17 @@ export function News() {
     fetchCategories();
   }, []);
 
-  // Filter news based on selected categories
-  const filteredNews = useMemo(() => {
-    return news.filter((item) => {
-      // If no categories selected, show all
-      if (selectedCategories.length === 0) return true;
-
-      // Exact match for selected categories
-      return selectedCategories.some((category) => category === item.category);
-    });
-  }, [news, selectedCategories]);
-
   // Initial fetch
   useEffect(() => {
     setLoading(true);
-    fetch(`/api/news`)
+    setNews([]); // Clear existing news when categories change
+    setNextCursor(null); // Reset cursor
+    setHasMore(true); // Reset hasMore
+    setPrefetchedData(null); // Clear prefetched data
+
+    fetch(
+      `/api/news${selectedCategories.length > 0 ? `?categories=${selectedCategories.join(",")}` : ""}`,
+    )
       .then((res) => res.json())
       .then((data) => {
         setNews(data.posts);
@@ -613,7 +609,7 @@ export function News() {
         } else console.log("Failed to load news.");
         setLoading(false);
       });
-  }, []);
+  }, [selectedCategories]); // Refetch when categories change
 
   // Prefetch next batch when we have a cursor
   useEffect(() => {
@@ -622,7 +618,11 @@ export function News() {
     const prefetchNextBatch = async () => {
       try {
         const res = await fetch(
-          `/api/news?cursor=${encodeURIComponent(nextCursor)}`,
+          `/api/news?cursor=${encodeURIComponent(nextCursor)}${
+            selectedCategories.length > 0
+              ? `&categories=${selectedCategories.join(",")}`
+              : ""
+          }`,
         );
         const data = await res.json();
         setPrefetchedData(data);
@@ -632,7 +632,7 @@ export function News() {
     };
 
     prefetchNextBatch();
-  }, [nextCursor, loadingMore, hasMore]);
+  }, [nextCursor, loadingMore, hasMore, selectedCategories]);
 
   // Infinite scroll with Intersection Observer
   useEffect(() => {
@@ -651,7 +651,11 @@ export function News() {
               setPrefetchedData(null);
             } else {
               const res = await fetch(
-                `/api/news?cursor=${encodeURIComponent(nextCursor)}`,
+                `/api/news?cursor=${encodeURIComponent(nextCursor)}${
+                  selectedCategories.length > 0
+                    ? `&categories=${selectedCategories.join(",")}`
+                    : ""
+                }`,
               );
               const data = await res.json();
               setNews((prev) => [...prev, ...data.posts]);
@@ -679,7 +683,14 @@ export function News() {
       }
       observer.disconnect();
     };
-  }, [hasMore, loading, loadingMore, nextCursor, prefetchedData]);
+  }, [
+    hasMore,
+    loading,
+    loadingMore,
+    nextCursor,
+    prefetchedData,
+    selectedCategories,
+  ]);
 
   const handleCategoryChange = (category: string) => {
     if (category === "clear") {
@@ -702,7 +713,7 @@ export function News() {
       );
     }
 
-    if (!loading && filteredNews.length === 0) {
+    if (!loading && news.length === 0) {
       return (
         <div className="flex w-full items-center justify-center py-16 text-base font-medium text-gray-300">
           No news available for the selected filters.
@@ -711,7 +722,7 @@ export function News() {
     }
 
     // Group news by date
-    const newsByDate = filteredNews.reduce(
+    const newsByDate = news.reduce(
       (acc, item) => {
         const date = item.date;
         if (!acc[date]) acc[date] = [];
@@ -771,7 +782,6 @@ export function News() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.3 }}
-                        layout
                       >
                         <AdSlot />
                       </motion.div>
@@ -785,7 +795,6 @@ export function News() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.3 }}
-                        layout
                       >
                         <NewsletterCTA />
                       </motion.div>
@@ -793,12 +802,11 @@ export function News() {
                   }
                   return (
                     <motion.div
-                      key={item.title}
+                      key={index}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.3 }}
-                      layout
                     >
                       <Link
                         href={item.link}
@@ -853,7 +861,7 @@ export function News() {
         </Fragment>
       );
     });
-  }, [filteredNews, loading, news.length]);
+  }, [news, loading, selectedCategories]);
 
   return (
     <section className="relative mx-auto mt-12 flex w-full max-w-5xl flex-col gap-y-4 px-4">
@@ -872,7 +880,7 @@ export function News() {
           <span className="inline-block size-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
         </div>
       )}
-      {!hasMore && !loading && filteredNews.length > 0 && (
+      {!hasMore && !loading && news.length > 0 && (
         <div className="flex w-full items-center justify-center py-8 text-base font-medium text-gray-300">
           All news loaded.
         </div>
