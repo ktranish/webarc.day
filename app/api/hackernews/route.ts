@@ -21,6 +21,7 @@ interface FormattedPost {
   date: string;
   favicon: string;
   _timestamp: number;
+  source: string;
 }
 
 function createObjectIdFromTimestamp(
@@ -114,6 +115,7 @@ export async function GET() {
         date: new Date(story.time * 1000).toISOString().split("T")[0],
         favicon: `https://www.google.com/s2/favicons?domain=news.ycombinator.com&sz=64`,
         _timestamp: story.time,
+        source: "hackernews",
       };
     });
 

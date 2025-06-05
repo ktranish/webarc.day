@@ -28,6 +28,7 @@ interface FormattedPost {
   date: string;
   id: string;
   _timestamp: number;
+  source: string;
 }
 
 function createObjectIdFromTimestamp(
@@ -72,6 +73,7 @@ export async function GET() {
         date: new Date(timestamp * 1000).toISOString().split("T")[0],
         id: post.id,
         _timestamp: timestamp, // Store raw timestamp for ObjectId creation
+        source: "reddit-programming",
       };
     });
 

@@ -1,6 +1,6 @@
 import client from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
 import { XMLParser } from "fast-xml-parser";
+import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 
 // Medium RSS feeds for different topics
@@ -36,6 +36,7 @@ interface FormattedPost {
   date: string;
   favicon: string;
   _timestamp: number;
+  source: string;
 }
 
 function createObjectIdFromTimestamp(
@@ -113,34 +114,39 @@ export async function GET() {
         }
 
         // Extract posts from the feed
-        const posts = Array.isArray(result.rss.channel.item)
+        const posts: MediumPost[] = Array.isArray(result.rss.channel.item)
           ? result.rss.channel.item
           : [result.rss.channel.item];
 
         // Format posts
-        const formattedPosts = posts.map((post: MediumPost) => {
-          // Get timestamp in seconds
-          const timestamp = Math.floor(new Date(post.pubDate).getTime() / 1000);
+        const formattedPosts: FormattedPost[] = posts.map(
+          (post: MediumPost) => {
+            // Get timestamp in seconds
+            const timestamp = Math.floor(
+              new Date(post.pubDate).getTime() / 1000,
+            );
 
-          // Extract the ID from the guid URL
-          const guidUrl =
-            typeof post.guid === "string" ? post.guid : post.guid["#text"];
-          const id = guidUrl.split("/").pop() || guidUrl;
+            // Extract the ID from the guid URL
+            const guidUrl =
+              typeof post.guid === "string" ? post.guid : post.guid["#text"];
+            const id = guidUrl.split("/").pop() || guidUrl;
 
-          return {
-            id,
-            title: post.title,
-            description: extractDescription(
-              post["content:encoded"],
-              post.title,
-            ),
-            category,
-            link: post.link,
-            date: new Date(timestamp * 1000).toISOString().split("T")[0],
-            favicon: `https://www.google.com/s2/favicons?domain=medium.com&sz=64`,
-            _timestamp: timestamp,
-          };
-        });
+            return {
+              id,
+              title: post.title,
+              description: extractDescription(
+                post["content:encoded"],
+                post.title,
+              ),
+              category,
+              link: post.link,
+              date: new Date(timestamp * 1000).toISOString().split("T")[0],
+              favicon: `https://www.google.com/s2/favicons?domain=medium.com&sz=64`,
+              _timestamp: timestamp,
+              source: "medium",
+            };
+          },
+        );
 
         allPosts.push(...formattedPosts);
       } catch (error) {
