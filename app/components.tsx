@@ -4,7 +4,7 @@ import { AppImage } from "@/components/app-image";
 import { categoryGradients } from "@/constants";
 import { useAnimatedNumber } from "@/hooks/useAnimatedNumber";
 import { cn } from "@/lib/utils";
-import { NewsItem } from "@/types";
+import { type NewsItem } from "@/types";
 import { Eye, Megaphone, MousePointer, TrendingUp, Users } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
@@ -759,10 +759,10 @@ export function News() {
       const items = newsByDate[date];
 
       // Calculate positions for ads and newsletters
-      const { adSlots, newsletterSlots } = getContentSlots(items.length);
+      const { adSlots, newsletterSlots } = getContentSlots(items?.length ?? 0);
 
       // Create array with items and insert ads/newsletters at calculated positions
-      const itemsWithAds = items.reduce(
+      const itemsWithAds = items?.reduce(
         (acc: (NewsItem | "ad" | "newsletter")[], item, index) => {
           if (adSlots.includes(index + 1)) {
             acc.push("ad");
@@ -791,7 +791,7 @@ export function News() {
 
             <div className="grid w-full grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               <AnimatePresence mode="popLayout">
-                {itemsWithAds.map((item, index) => {
+                {itemsWithAds?.map((item, index) => {
                   if (item === "ad") {
                     return (
                       <motion.div
@@ -879,7 +879,7 @@ export function News() {
         </Fragment>
       );
     });
-  }, [news, loading, selectedCategories]);
+  }, [news, loading]);
 
   return (
     <section className="relative mx-auto mt-12 flex w-full max-w-5xl flex-col gap-y-4 px-4">

@@ -26,7 +26,7 @@ export function getDaysBetween(start: Date, end: Date) {
   return Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 to include both start and end dates
 }
 
-export function getDateRange(monthsAgo = 0) {
+export function getDateRange(monthsAgo = 0): [Date, Date] {
   const end = new Date();
   const start = new Date();
 

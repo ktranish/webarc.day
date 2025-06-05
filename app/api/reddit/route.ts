@@ -70,7 +70,7 @@ export async function GET() {
         description: post.selftext ? post.selftext.slice(0, 180) : post.title,
         category: "webdev",
         link: `https://reddit.com${post.permalink}`,
-        date: new Date(timestamp * 1000).toISOString().split("T")[0],
+        date: new Date(timestamp * 1000).toISOString().split("T")[0] as string,
         id: post.id,
         _timestamp: timestamp, // Store raw timestamp for ObjectId creation
         source: "reddit",

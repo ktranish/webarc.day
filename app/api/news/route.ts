@@ -24,7 +24,7 @@ interface MongoQuery {
 
 interface NewsResponse {
   posts: Post[];
-  nextCursor: string | null;
+  nextCursor: string | null | undefined;
   hasMore: boolean;
 }
 
@@ -58,7 +58,7 @@ export async function GET(req: NextRequest) {
       .toArray();
     const hasMore = rawPosts.length === LIMIT;
     const nextCursor = hasMore
-      ? rawPosts[rawPosts.length - 1]._id.toString()
+      ? rawPosts[rawPosts.length - 1]?._id.toString()
       : null;
 
     const response: NewsResponse = { posts, nextCursor, hasMore };

@@ -1,7 +1,7 @@
 import { AppImage } from "@/components/app-image";
 import client from "@/lib/mongodb";
 import { ArrowLeft } from "lucide-react";
-import { Metadata } from "next";
+import { type Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 

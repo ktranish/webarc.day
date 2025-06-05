@@ -112,7 +112,7 @@ export async function GET() {
         description: `${story.score} points by ${story.by} | ${story.descendants} comments`,
         category: "webdev",
         link: story.url,
-        date: new Date(story.time * 1000).toISOString().split("T")[0],
+        date: new Date(story.time * 1000).toISOString().split("T")[0] as string,
         favicon: `https://www.google.com/s2/favicons?domain=news.ycombinator.com&sz=64`,
         _timestamp: story.time,
         source: "hackernews",

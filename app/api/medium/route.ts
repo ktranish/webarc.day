@@ -140,7 +140,9 @@ export async function GET() {
               ),
               category,
               link: post.link,
-              date: new Date(timestamp * 1000).toISOString().split("T")[0],
+              date: new Date(timestamp * 1000)
+                .toISOString()
+                .split("T")[0] as string,
               favicon: `https://www.google.com/s2/favicons?domain=medium.com&sz=64`,
               _timestamp: timestamp,
               source: "medium",

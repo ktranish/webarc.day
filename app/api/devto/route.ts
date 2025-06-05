@@ -61,9 +61,9 @@ export async function GET() {
         favicon: `https://www.google.com/s2/favicons?domain=dev.to&sz=64`,
         title: post.title,
         description: post.description || post.summary || post.title,
-        category: post.tag_list[0],
+        category: post.tag_list[0] as string,
         link: post.url,
-        date: new Date(timestamp * 1000).toISOString().split("T")[0],
+        date: new Date(timestamp * 1000).toISOString().split("T")[0] as string,
         id: post.id,
         _timestamp: timestamp, // Store raw timestamp for ObjectId creation
         source: "dev.to",
