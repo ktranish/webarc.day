@@ -1,7 +1,5 @@
 "use client";
 
-import { Footer } from "@/components/footer";
-import { Navbar } from "@/components/navbar";
 import { ArrowRight, Wrench } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -119,7 +117,6 @@ function ToolItem({ tool }: { tool: (typeof TOOLS)[0] }) {
 export default function ToolsPage() {
   return (
     <>
-      <Navbar />
       <main className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-16 px-4 py-16">
         <ToolsHeader />
         <Awards />
@@ -133,7 +130,6 @@ export default function ToolsPage() {
           <EmptyState />
         )}
       </main>
-      <Footer />
     </>
   );
 }

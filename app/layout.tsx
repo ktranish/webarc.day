@@ -1,3 +1,5 @@
+import { Footer } from "@/components/footer";
+import { Navbar } from "@/components/navbar";
 import { BASE_URL } from "@/constants";
 import { cn } from "@/lib/utils";
 import { Analytics } from "@vercel/analytics/next";
@@ -103,7 +105,9 @@ export default function RootLayout({
           ></iframe>
         </noscript>
         <MotionConfig reducedMotion="user">
+          <Navbar />
           {children}
+          <Footer />
           <Analytics />
         </MotionConfig>
       </body>

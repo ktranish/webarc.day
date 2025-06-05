@@ -32,7 +32,7 @@ export function Footer() {
               <li>
                 <Link
                   className="text-gray-600 transition-colors hover:text-blue-600"
-                  href="#"
+                  href="/sitemap"
                 >
                   Sitemap
                 </Link>
@@ -46,7 +46,7 @@ export function Footer() {
               <li>
                 <Link
                   className="text-gray-600 transition-colors hover:text-blue-600"
-                  href="#"
+                  href="/legal/privacy-policy"
                 >
                   Privacy
                 </Link>
@@ -54,7 +54,7 @@ export function Footer() {
               <li>
                 <Link
                   className="text-gray-600 transition-colors hover:text-blue-600"
-                  href="#"
+                  href="/legal/terms"
                 >
                   Terms
                 </Link>

@@ -1,6 +1,4 @@
 import { AppImage } from "@/components/app-image";
-import { Footer } from "@/components/footer";
-import { Navbar } from "@/components/navbar";
 import client from "@/lib/mongodb";
 import { ArrowLeft } from "lucide-react";
 import { Metadata } from "next";
@@ -106,7 +104,6 @@ export default async function BlogPostPage({
 
   return (
     <>
-      <Navbar />
       <main className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-8 px-4 py-8">
         <Link
           href="/blog"
@@ -154,7 +151,6 @@ export default async function BlogPostPage({
           />
         </article>
       </main>
-      <Footer />
     </>
   );
 }

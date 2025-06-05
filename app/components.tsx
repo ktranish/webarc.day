@@ -1,8 +1,6 @@
 "use client";
 
 import { AppImage } from "@/components/app-image";
-import { Footer } from "@/components/footer";
-import { Navbar } from "@/components/navbar";
 import { categoryGradients } from "@/constants";
 import { cn } from "@/lib/utils";
 import { NewsItem } from "@/types";
@@ -894,14 +892,12 @@ export function Landing() {
         nonce: undefined,
       }}
     >
-      <Navbar />
       <main className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-4 py-16">
         <Header />
         <Analytics />
         <News />
         <Dock />
       </main>
-      <Footer />
     </GoogleReCaptchaProvider>
   );
 }

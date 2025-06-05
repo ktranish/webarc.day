@@ -2,6 +2,23 @@ export const LIMIT = 12;
 
 export const BASE_URL = "https://www.webarc.day";
 
+export const LEGAL_PAGE_LINK_CARDS = [
+  {
+    title: "Terms of Service",
+    description: "Rules and guidelines for using biohub.fyi",
+    href: "/legal/terms",
+    emoji: "📜",
+    color: "#DBEAFE", // blue-100
+  },
+  {
+    title: "Privacy Policy",
+    description: "How we collect, use, and protect your data",
+    href: "/legal/privacy-policy",
+    emoji: "🔒",
+    color: "#D1FAE5", // green-100
+  },
+];
+
 export const categoryGradients: Record<string, string> = {
   webdev: "from-sky-50 to-sky-100",
   solodev: "from-blue-50 to-blue-100",

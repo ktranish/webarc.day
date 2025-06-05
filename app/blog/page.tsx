@@ -1,7 +1,5 @@
 "use client";
 
-import { Footer } from "@/components/footer";
-import { Navbar } from "@/components/navbar";
 import { ArrowRight, FileText } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -140,7 +138,6 @@ export default function BlogPage() {
 
   return (
     <>
-      <Navbar />
       <main className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-8 px-4 py-16">
         <BlogHeader />
         {loading ? (
@@ -159,7 +156,6 @@ export default function BlogPage() {
           <EmptyState />
         )}
       </main>
-      <Footer />
     </>
   );
 }

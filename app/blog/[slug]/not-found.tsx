@@ -1,12 +1,9 @@
-import { Footer } from "@/components/footer";
-import { Navbar } from "@/components/navbar";
 import { ArrowLeft, FileText } from "lucide-react";
 import Link from "next/link";
 
 export default function NotFound() {
   return (
     <>
-      <Navbar />
       <main className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-8 px-4 py-16">
         <div className="flex flex-col items-center justify-center gap-y-6 rounded-3xl border border-gray-100 bg-white/80 p-12 text-center backdrop-blur-sm">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-50">
@@ -29,7 +26,6 @@ export default function NotFound() {
           </Link>
         </div>
       </main>
-      <Footer />
     </>
   );
 }
