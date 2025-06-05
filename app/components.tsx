@@ -2,6 +2,7 @@
 
 import { AppImage } from "@/components/app-image";
 import { categoryGradients } from "@/constants";
+import { useAnimatedNumber } from "@/hooks/useAnimatedNumber";
 import { cn } from "@/lib/utils";
 import { NewsItem } from "@/types";
 import { Eye, Megaphone, MousePointer, TrendingUp, Users } from "lucide-react";
@@ -244,6 +245,23 @@ function Analytics() {
   } | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const { current: animatedVisitors } = useAnimatedNumber(
+    metrics?.visitors || 0,
+  );
+  const { current: animatedPageviews } = useAnimatedNumber(
+    metrics?.pageviews || 0,
+  );
+  const { current: animatedClicks } = useAnimatedNumber(metrics?.clicks || 0);
+  const { current: animatedDailyVisitors } = useAnimatedNumber(
+    metrics?.dailyMetrics.visitors || 0,
+  );
+  const { current: animatedDailyPageviews } = useAnimatedNumber(
+    metrics?.dailyMetrics.pageviews || 0,
+  );
+  const { current: animatedDailyClicks } = useAnimatedNumber(
+    metrics?.dailyMetrics.clicks || 0,
+  );
+
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
@@ -329,13 +347,13 @@ function Analytics() {
           <div className="flex flex-col gap-1">
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-semibold text-gray-900">
-                {metrics.visitors.toLocaleString()}
+                {animatedVisitors.toLocaleString()}
               </span>
               <span className="text-sm text-gray-500">total</span>
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-sm text-gray-600">
-                {metrics.dailyMetrics.visitors.toLocaleString()}
+                {animatedDailyVisitors.toLocaleString()}
               </span>
               <span className="text-xs text-gray-500">per day</span>
             </div>
@@ -373,13 +391,13 @@ function Analytics() {
           <div className="flex flex-col gap-1">
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-semibold text-gray-900">
-                {metrics.pageviews.toLocaleString()}
+                {animatedPageviews.toLocaleString()}
               </span>
               <span className="text-sm text-gray-500">total</span>
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-sm text-gray-600">
-                {metrics.dailyMetrics.pageviews.toLocaleString()}
+                {animatedDailyPageviews.toLocaleString()}
               </span>
               <span className="text-xs text-gray-500">per day</span>
             </div>
@@ -417,13 +435,13 @@ function Analytics() {
           <div className="flex flex-col gap-1">
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-semibold text-gray-900">
-                {metrics.clicks.toLocaleString()}
+                {animatedClicks.toLocaleString()}
               </span>
               <span className="text-sm text-gray-500">total</span>
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-sm text-gray-600">
-                {metrics.dailyMetrics.clicks.toLocaleString()}
+                {animatedDailyClicks.toLocaleString()}
               </span>
               <span className="text-xs text-gray-500">per day</span>
             </div>
