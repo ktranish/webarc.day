@@ -23,4 +23,9 @@ export const categoryGradients: Record<string, string> = {
   database: "from-stone-50 to-stone-100",
   security: "from-zinc-50 to-zinc-100",
   freelance: "from-sky-50 to-sky-100",
+  ssl: "from-blue-50 to-blue-100",
+  crypto: "from-green-50 to-green-100",
+  react: "from-purple-50 to-purple-100",
+  hosting: "from-pink-50 to-pink-100",
+  debug: "from-amber-50 to-amber-100",
 };
