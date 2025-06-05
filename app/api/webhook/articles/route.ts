@@ -25,23 +25,16 @@ export async function POST(req: NextRequest) {
     // Parse request body
     const article = await req.json();
 
-    // Add timestamp
-    const articleWithTimestamp = {
-      ...article,
-      date: new Date().toISOString(),
-      id: crypto.randomUUID(),
-    };
-
     // Insert into MongoDB
     const db = client.db("webarc");
     const collection = db.collection("articles");
 
-    await collection.insertOne(articleWithTimestamp);
+    await collection.insertOne(article["data"][0]);
 
     return NextResponse.json(
       {
         message: "Article created successfully",
-        article: articleWithTimestamp,
+        article: article["data"][0],
       },
       { status: 201 },
     );
