@@ -9,11 +9,13 @@ import { useEffect, useState } from "react";
 interface Article {
   id: string;
   title: string;
-  excerpt: string;
-  date: string;
-  category: string;
-  readTime: string;
+  content_markdown: string;
+  content_html: string;
+  meta_description: string;
+  created_at: string;
+  image_url: string;
   slug: string;
+  tags: string[];
 }
 
 function BlogHeader() {
@@ -77,17 +79,28 @@ function BlogPost({ post }: { post: Article }) {
         <div className="flex flex-col gap-y-4">
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-blue-700/10">
-              {post.category}
+              {post.tags[0]}
             </span>
-            <span className="text-sm text-gray-500">{post.readTime}</span>
+            <span className="text-sm text-gray-500">
+              {new Date(post.created_at).toLocaleDateString()}
+            </span>
           </div>
           <h2 className="text-xl font-semibold tracking-tight text-gray-900">
             {post.title}
           </h2>
-          <p className="truncate text-gray-600">{post.excerpt}</p>
+          <p className="truncate text-gray-600">{post.meta_description}</p>
         </div>
         <div className="flex items-center justify-between">
-          <time className="text-sm text-gray-500">{post.date}</time>
+          <div className="flex flex-wrap gap-2">
+            {post.tags.slice(0, 2).map((tag) => (
+              <span
+                key={tag}
+                className="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-gray-500/10"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
           <Link
             href={`/blog/${post.slug}`}
             className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 transition-colors hover:text-blue-700"
