@@ -2,6 +2,7 @@
 
 import { ArrowRight, FileText } from "lucide-react";
 import Link from "next/link";
+import Script from "next/script";
 import { useEffect, useState } from "react";
 
 interface Article {
@@ -138,6 +139,40 @@ export default function BlogPage() {
 
   return (
     <>
+      <Script
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Blog",
+            name: "Web Development Insights & Tutorials | webarc.day",
+            description:
+              "Stay updated with the latest trends, technologies, and best practices in web development.",
+            url: "https://webarc.day/blog",
+            publisher: {
+              "@type": "Organization",
+              name: "webarc.day",
+              url: "https://webarc.day",
+            },
+            blogPost: articles.map((article) => ({
+              "@type": "BlogPosting",
+              headline: article.title,
+              description: article.meta_description,
+              datePublished: article.created_at,
+              dateModified: article.created_at,
+              author: {
+                "@type": "Organization",
+                name: "webarc.day",
+              },
+              url: `https://webarc.day/blog/${article.slug}`,
+              image: article.image_url,
+              keywords: article.tags.join(", "),
+            })),
+          }),
+        }}
+        id="blog-schema"
+        type="application/ld+json"
+      />
+
       <main className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-8 px-4 py-16">
         <BlogHeader />
         {loading ? (

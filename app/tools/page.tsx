@@ -3,6 +3,7 @@
 import { ArrowRight, Wrench } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import Script from "next/script";
 
 const TOOLS: {
   id: number;
@@ -117,6 +118,40 @@ function ToolItem({ tool }: { tool: (typeof TOOLS)[0] }) {
 export default function ToolsPage() {
   return (
     <>
+      <Script
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            name: "Developer Tools & Resources | webarc.day",
+            description:
+              "A curated collection of essential developer tools and resources to enhance your development workflow.",
+            url: "https://webarc.day/tools",
+            publisher: {
+              "@type": "Organization",
+              name: "webarc.day",
+              url: "https://webarc.day",
+            },
+            mainEntity: {
+              "@type": "ItemList",
+              itemListElement: TOOLS.map((tool, index) => ({
+                "@type": "ListItem",
+                position: index + 1,
+                item: {
+                  "@type": "SoftwareApplication",
+                  name: tool.title,
+                  description: tool.description,
+                  applicationCategory: tool.category,
+                  url: tool.url,
+                },
+              })),
+            },
+          }),
+        }}
+        id="tools-schema"
+        type="application/ld+json"
+      />
+
       <main className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-16 px-4 py-16">
         <ToolsHeader />
         <Awards />
