@@ -25,20 +25,6 @@ export async function POST(req: NextRequest) {
     // Parse request body
     const article = await req.json();
 
-    // Validate required fields
-    const requiredFields = ["title", "excerpt", "category", "readTime", "slug"];
-    const missingFields = requiredFields.filter((field) => !article[field]);
-
-    if (missingFields.length > 0) {
-      return NextResponse.json(
-        {
-          error: "Missing required fields",
-          fields: missingFields,
-        },
-        { status: 400 },
-      );
-    }
-
     // Add timestamp
     const articleWithTimestamp = {
       ...article,
