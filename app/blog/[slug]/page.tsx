@@ -23,9 +23,11 @@ interface Article {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const article = await getArticle(params.slug);
+  const slug = (await params).slug;
+
+  const article = await getArticle(slug);
 
   if (!article) {
     return {

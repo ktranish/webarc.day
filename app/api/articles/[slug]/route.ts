@@ -3,13 +3,15 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { slug: string } },
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
+    const slug = (await params).slug;
+
     const db = client.db("webarc");
     const collection = db.collection("articles");
 
-    const article = await collection.findOne({ slug: params.slug });
+    const article = await collection.findOne({ slug });
 
     if (!article) {
       return NextResponse.json({ error: "Article not found" }, { status: 404 });
