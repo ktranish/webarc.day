@@ -856,7 +856,7 @@ export function News() {
   }, [filteredNews, loading]);
 
   return (
-    <section className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-4 px-4 py-12">
+    <section className="relative mx-auto mt-12 flex w-full max-w-5xl flex-col gap-y-4 px-4">
       <FilterBar
         categories={categories}
         selectedCategories={selectedCategories}
