@@ -29,12 +29,12 @@ export async function POST(req: NextRequest) {
     const db = client.db("webarc");
     const collection = db.collection("articles");
 
-    await collection.insertOne(article);
+    await collection.insertOne(article.data.articles[0]);
 
     return NextResponse.json(
       {
         message: "Article created successfully",
-        article: article,
+        article: article.data.articles[0],
       },
       { status: 201 },
     );
