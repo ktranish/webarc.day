@@ -144,8 +144,8 @@ export default function BlogPage() {
       <main className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-8 px-4 py-16">
         <BlogHeader />
         {loading ? (
-          <div className="flex justify-center">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
+          <div className="flex w-full items-center justify-center py-16">
+            <span className="inline-block size-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
           </div>
         ) : error ? (
           <div className="text-center text-red-600">{error}</div>
