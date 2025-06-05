@@ -847,7 +847,7 @@ export function Landing() {
       }}
     >
       <Navbar />
-      <main className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-4 px-4 py-16">
+      <main className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-4 py-16">
         <Header />
         <Analytics />
         <News />

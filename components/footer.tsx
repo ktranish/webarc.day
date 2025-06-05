@@ -5,7 +5,7 @@ import Link from "next/link";
 export function Footer() {
   return (
     <footer className="border-t border-gray-100 bg-white">
-      <div className="mx-auto w-full max-w-5xl px-8 py-12">
+      <div className="mx-auto w-full max-w-5xl px-4 py-12">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4">
           <div className="flex flex-col gap-y-4">
             <Link className="inline-block" href="/">

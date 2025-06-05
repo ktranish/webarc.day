@@ -90,7 +90,7 @@ function BlogPost({ post }: { post: Article }) {
           </h2>
           <p className="truncate text-gray-600">{post.meta_description}</p>
         </div>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap gap-2">
             {post.tags.slice(0, 2).map((tag) => (
               <span

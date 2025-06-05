@@ -12,7 +12,7 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-[60] border-b border-gray-100 bg-white/80 backdrop-blur-sm">
-      <div className="mx-auto w-full max-w-5xl px-8">
+      <div className="mx-auto w-full max-w-5xl px-4">
         <div className="flex h-16 items-center justify-between">
           <Link className="inline-block" href="/">
             <div className="flex items-center gap-2">
