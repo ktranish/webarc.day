@@ -41,7 +41,7 @@ function Awards() {
           rel="noopener noreferrer nofollow"
         >
           <img
-            src="https://fazier.com/api/v1/public/badges/embed_image.svg?launch_id=4594&badge_type=featured&theme=light"
+            src="https://fazier.com/api/v1/public/badges/embed_image.svg?launch_id=4594&badge_type=daily&theme=light"
             width="270"
             alt="Fazier badge"
           />

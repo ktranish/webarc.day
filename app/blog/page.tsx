@@ -4,16 +4,17 @@ import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { ArrowRight, FileText } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-const BLOG_POSTS: {
-  id: number;
+interface Article {
+  id: string;
   title: string;
   excerpt: string;
   date: string;
   category: string;
   readTime: string;
   slug: string;
-}[] = [];
+}
 
 function BlogHeader() {
   return (
@@ -69,7 +70,7 @@ function EmptyState() {
   );
 }
 
-function BlogPost({ post }: { post: (typeof BLOG_POSTS)[0] }) {
+function BlogPost({ post }: { post: Article }) {
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white/80 p-6 backdrop-blur-sm">
       <div className="flex h-full flex-col justify-between gap-4">
@@ -101,15 +102,44 @@ function BlogPost({ post }: { post: (typeof BLOG_POSTS)[0] }) {
 }
 
 export default function BlogPage() {
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchArticles() {
+      try {
+        const response = await fetch("/api/articles");
+        if (!response.ok) {
+          throw new Error("Failed to fetch articles");
+        }
+        const data = await response.json();
+        setArticles(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchArticles();
+  }, []);
+
   return (
     <>
       <Navbar />
       <main className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-8 px-4 py-16">
         <BlogHeader />
-        {BLOG_POSTS.length > 0 ? (
+        {loading ? (
+          <div className="flex justify-center">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
+          </div>
+        ) : error ? (
+          <div className="text-center text-red-600">{error}</div>
+        ) : articles.length > 0 ? (
           <div className="grid gap-6 sm:grid-cols-2">
-            {BLOG_POSTS.map((post) => (
-              <BlogPost key={post.id} post={post} />
+            {articles.map((article) => (
+              <BlogPost key={article.id} post={article} />
             ))}
           </div>
         ) : (
