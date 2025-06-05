@@ -55,7 +55,7 @@ function EmptyState() {
       <div className="flex flex-col gap-y-2">
         <h2 className="text-xl font-semibold text-gray-900">No Articles Yet</h2>
         <p className="text-gray-600">
-          We're working on bringing you the latest insights and tutorials.
+          We&apos;re working on bringing you the latest insights and tutorials.
           <br />
           Check back soon for new content!
         </p>

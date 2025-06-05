@@ -126,6 +126,7 @@ export default function RootLayout({
       <body className={cn("antialiased", sora.className)}>
         <noscript>
           <iframe
+            title="gtm"
             src="https://www.googletagmanager.com/ns.html?id=GTM-5DF5DBCR"
             height="0"
             width="0"

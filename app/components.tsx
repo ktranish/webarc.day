@@ -853,7 +853,7 @@ export function News() {
         </Fragment>
       );
     });
-  }, [filteredNews, loading]);
+  }, [filteredNews, loading, news.length]);
 
   return (
     <section className="relative mx-auto mt-12 flex w-full max-w-5xl flex-col gap-y-4 px-4">

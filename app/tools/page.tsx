@@ -61,7 +61,7 @@ function EmptyState() {
           No Tools Available
         </h2>
         <p className="text-gray-600">
-          We're currently curating our collection of development tools.
+          We&apos;re currently curating our collection of development tools.
           <br />
           Check back soon for new resources!
         </p>
