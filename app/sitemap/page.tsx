@@ -1,5 +1,4 @@
 import { BackLink } from "@/components/back-link";
-import { BASE_URL } from "@/constants";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Script from "next/script";
@@ -8,6 +7,26 @@ export const metadata: Metadata = {
   title: "Sitemap | webarc.day",
   description:
     "Explore all pages and features available on webarc.day. Find links to profiles, legal documents, and more.",
+  openGraph: {
+    title: "Sitemap | webarc.day",
+    description:
+      "Explore all pages and features available on webarc.day. Find links to profiles, legal documents, and more.",
+    type: "website",
+    url: "https://www.webarc.day/sitemap",
+  },
+  twitter: {
+    card: "summary",
+    title: "Sitemap | webarc.day",
+    description:
+      "Explore all pages and features available on webarc.day. Find links to profiles, legal documents, and more.",
+  },
+  alternates: {
+    canonical: "https://www.webarc.day/sitemap",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 const SITEMAP_SECTIONS = [
@@ -100,10 +119,46 @@ export default function SitemapPage() {
             name: "Sitemap | webarc.day",
             description:
               "Explore all pages and features available on webarc.day. Find links to profiles, legal documents, and more.",
+            url: "https://www.webarc.day/sitemap",
             publisher: {
               "@type": "Organization",
               name: "webarc.day",
-              url: BASE_URL,
+              url: "https://www.webarc.day",
+            },
+            breadcrumb: {
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                {
+                  "@type": "ListItem",
+                  position: 1,
+                  item: {
+                    "@id": "https://www.webarc.day",
+                    name: "Home",
+                  },
+                },
+                {
+                  "@type": "ListItem",
+                  position: 2,
+                  item: {
+                    "@id": "https://www.webarc.day/sitemap",
+                    name: "Sitemap",
+                  },
+                },
+              ],
+            },
+            mainEntity: {
+              "@type": "SiteNavigationElement",
+              name: "Site Navigation",
+              url: "https://www.webarc.day/sitemap",
+              hasPart: SITEMAP_SECTIONS.flatMap((section) =>
+                section.links.map((link) => ({
+                  "@type": "WebPage",
+                  name: link.title,
+                  url: link.href.startsWith("http")
+                    ? link.href
+                    : `https://www.webarc.day${link.href}`,
+                })),
+              ),
             },
           }),
         }}
