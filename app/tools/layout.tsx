@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description:
       "A curated collection of essential developer tools and resources to enhance your development workflow. Find the best tools for web development, productivity, and more.",
     type: "website",
-    url: "https://webarc.day/tools",
+    url: "https://www.webarc.day/tools",
   },
   twitter: {
     card: "summary_large_image",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
       "A curated collection of essential developer tools and resources to enhance your development workflow. Find the best tools for web development, productivity, and more.",
   },
   alternates: {
-    canonical: "https://webarc.day/tools",
+    canonical: "https://www.webarc.day/tools",
   },
   robots: {
     index: true,

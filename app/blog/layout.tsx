@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description:
       "Stay updated with the latest trends, technologies, and best practices in web development. Expert insights, tutorials, and guides.",
     type: "website",
-    url: "https://webarc.day/blog",
+    url: "https://www.webarc.day/blog",
   },
   twitter: {
     card: "summary_large_image",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
       "Stay updated with the latest trends, technologies, and best practices in web development. Expert insights, tutorials, and guides.",
   },
   alternates: {
-    canonical: "https://webarc.day/blog",
+    canonical: "https://www.webarc.day/blog",
   },
   robots: {
     index: true,

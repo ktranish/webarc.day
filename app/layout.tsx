@@ -28,6 +28,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   alternates: {
     canonical: "./",
+    languages: {
+      "en-US": "https://www.webarc.day",
+    },
   },
   openGraph: {
     title: "Daily News, Curated for You",
@@ -93,6 +96,30 @@ export default function RootLayout({
               'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
               })(window,document,'script','dataLayer','GTM-PP5R7VGW');
             `,
+          }}
+        />
+        <Script
+          id="organization-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "webarc.day",
+              url: "https://www.webarc.day",
+              logo: "https://www.webarc.day/logo.png",
+              sameAs: [
+                "https://twitter.com/ktranish",
+                "https://github.com/ktranish",
+                "https://linkedin.com/in/ktranish",
+              ],
+              contactPoint: {
+                "@type": "ContactPoint",
+                contactType: "customer service",
+                email: "kenny@ketryon.com",
+                availableLanguage: ["English"],
+              },
+            }),
           }}
         />
       </head>

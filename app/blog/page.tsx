@@ -147,11 +147,11 @@ export default function BlogPage() {
             name: "Web Development Insights & Tutorials | webarc.day",
             description:
               "Stay updated with the latest trends, technologies, and best practices in web development.",
-            url: "https://webarc.day/blog",
+            url: "https://www.webarc.day/blog",
             publisher: {
               "@type": "Organization",
               name: "webarc.day",
-              url: "https://webarc.day",
+              url: "https://www.webarc.day",
             },
             blogPost: articles.map((article) => ({
               "@type": "BlogPosting",
@@ -163,7 +163,7 @@ export default function BlogPage() {
                 "@type": "Organization",
                 name: "webarc.day",
               },
-              url: `https://webarc.day/blog/${article.slug}`,
+              url: `https://www.webarc.day/blog/${article.slug}`,
               image: article.image_url,
               keywords: article.tags.join(", "),
             })),

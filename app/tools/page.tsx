@@ -126,11 +126,11 @@ export default function ToolsPage() {
             name: "Developer Tools & Resources | webarc.day",
             description:
               "A curated collection of essential developer tools and resources to enhance your development workflow.",
-            url: "https://webarc.day/tools",
+            url: "https://www.webarc.day/tools",
             publisher: {
               "@type": "Organization",
               name: "webarc.day",
-              url: "https://webarc.day",
+              url: "https://www.webarc.day",
             },
             mainEntity: {
               "@type": "ItemList",

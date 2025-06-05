@@ -39,7 +39,7 @@ export default function TermsOfService() {
             publisher: {
               "@type": "Organization",
               name: "webarc.day",
-              url: "https://webarc.day",
+              url: "https://www.webarc.day",
             },
             mainEntity: {
               "@type": "Article",
