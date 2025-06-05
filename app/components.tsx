@@ -6,7 +6,7 @@ import { Navbar } from "@/components/navbar";
 import { categoryGradients } from "@/constants";
 import { cn } from "@/lib/utils";
 import { NewsItem } from "@/types";
-import { Eye, Megaphone, TrendingUp, Users } from "lucide-react";
+import { Eye, Megaphone, MousePointer, TrendingUp, Users } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
@@ -217,17 +217,21 @@ function Analytics() {
   const [metrics, setMetrics] = useState<{
     visitors: number;
     pageviews: number;
+    clicks: number;
     dailyMetrics: {
       visitors: number;
       pageviews: number;
+      clicks: number;
     };
     periodGrowth: {
       visitors: number;
       pageviews: number;
+      clicks: number;
     };
     dailyGrowth: {
       visitors: number;
       pageviews: number;
+      clicks: number;
     };
     dateRanges: {
       current: {
@@ -265,8 +269,8 @@ function Analytics() {
           <div className="shimmer h-6 w-24 rounded-lg bg-gray-100" />
           <div className="shimmer h-4 w-24 rounded-lg bg-gray-100" />
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {Array.from({ length: 2 }).map((_, i) => (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => (
             <div
               key={i}
               className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-4"
@@ -316,7 +320,7 @@ function Analytics() {
         </h2>
         <span className="text-sm text-gray-500">{dateRange}</span>
       </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-4">
           <div className="flex items-center gap-2">
             <div className="rounded-lg bg-blue-50 p-2">
@@ -400,6 +404,50 @@ function Analytics() {
               >
                 {metrics.periodGrowth.pageviews > 0 ? "+" : ""}
                 {metrics.periodGrowth.pageviews}% vs last period
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-white p-4">
+          <div className="flex items-center gap-2">
+            <div className="rounded-lg bg-blue-50 p-2">
+              <MousePointer className="h-4 w-4 text-blue-600" />
+            </div>
+            <span className="text-sm font-medium text-gray-600">Clicks</span>
+          </div>
+          <div className="flex flex-col gap-1">
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-semibold text-gray-900">
+                {metrics.clicks.toLocaleString()}
+              </span>
+              <span className="text-sm text-gray-500">total</span>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-sm text-gray-600">
+                {metrics.dailyMetrics.clicks.toLocaleString()}
+              </span>
+              <span className="text-xs text-gray-500">per day</span>
+            </div>
+            <div className="mt-1 flex items-center gap-1">
+              <TrendingUp
+                className={cn(
+                  "h-3 w-3",
+                  metrics.periodGrowth.clicks >= 0
+                    ? "text-green-500"
+                    : "rotate-180 text-red-500",
+                )}
+              />
+              <span
+                className={cn(
+                  "text-xs font-medium",
+                  metrics.periodGrowth.clicks >= 0
+                    ? "text-green-500"
+                    : "text-red-500",
+                )}
+              >
+                {metrics.periodGrowth.clicks > 0 ? "+" : ""}
+                {metrics.periodGrowth.clicks}% vs last period
               </span>
             </div>
           </div>
