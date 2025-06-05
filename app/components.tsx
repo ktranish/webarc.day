@@ -33,8 +33,8 @@ function Dock() {
   return (
     <div className="fixed bottom-8 left-1/2 z-50 -translate-x-1/2">
       <div className="flex items-center gap-x-2 rounded-full border border-gray-200 bg-white/80 px-4 py-2 shadow-lg backdrop-blur-sm">
-        <a
-          href="mailto:kenny@ketryon.com?subject=Source%20Submission"
+        <Link
+          href="/contact"
           className="inline-flex items-center gap-x-2 text-sm font-medium text-gray-700 transition hover:text-blue-600"
         >
           <svg
@@ -52,7 +52,7 @@ function Dock() {
             />
           </svg>
           Submit Source
-        </a>
+        </Link>
       </div>
     </div>
   );
@@ -154,8 +154,8 @@ function NewsletterCTA() {
 
 function AdSlot() {
   return (
-    <a
-      href="mailto:kenny@ketryon.com?subject=Ad%20Inquiry"
+    <Link
+      href="/contact"
       className="group relative flex flex-col items-center justify-center overflow-hidden rounded-3xl border-2 border-dashed border-blue-200 bg-white/80 px-4 py-20 text-center transition hover:border-blue-300 hover:bg-white/90"
     >
       {/* Subtle background pattern */}
@@ -187,7 +187,7 @@ function AdSlot() {
       <div className="relative z-10 mt-1 text-xs text-gray-300 transition group-hover:text-gray-400">
         Reach thousands of web developers on webarc.day
       </div>
-    </a>
+    </Link>
   );
 }
 

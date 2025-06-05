@@ -24,7 +24,7 @@ const SITEMAP_SECTIONS = [
     links: [
       {
         title: "Contact",
-        href: "mailto:kenny@ketryon.com?subject=Contact%20Support",
+        href: "/contact",
       },
       { title: "Sitemap", href: "/sitemap" },
     ],

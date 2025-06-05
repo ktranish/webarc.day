@@ -7,6 +7,7 @@ import { MotionConfig } from "motion/react";
 import { Metadata, Viewport } from "next";
 import { Sora } from "next/font/google";
 import Script from "next/script";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 const sora = Sora({ subsets: ["latin"] });
@@ -108,6 +109,7 @@ export default function RootLayout({
           <Navbar />
           {children}
           <Footer />
+          <Toaster />
           <Analytics />
         </MotionConfig>
       </body>

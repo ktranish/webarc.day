@@ -225,7 +225,7 @@ export default function PrivacyPolicy() {
                 <Link
                   aria-label="Send email to privacy team"
                   className="text-blue-600 transition-colors hover:text-blue-700"
-                  href="mailto:kenny@ketryon.com?subject=Contact%20Support"
+                  href="/contact"
                 >
                   contact us
                 </Link>

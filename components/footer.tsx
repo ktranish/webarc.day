@@ -24,7 +24,7 @@ export function Footer() {
               <li>
                 <Link
                   className="text-gray-600 transition-colors hover:text-blue-600"
-                  href="mailto:kenny@ketryon.com?subject=Contact%20Support"
+                  href="/contact"
                 >
                   Contact Support
                 </Link>
