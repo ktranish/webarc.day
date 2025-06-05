@@ -86,7 +86,7 @@ export default async function BlogPostPage({
   return (
     <>
       <Navbar />
-      <main className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-8 px-8 py-8">
+      <main className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-8 px-4 py-8">
         <Link
           href="/blog"
           className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
