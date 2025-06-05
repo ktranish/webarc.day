@@ -17,7 +17,7 @@ import {
 
 function Header() {
   return (
-    <header className="flex flex-col gap-y-4">
+    <header className="flex flex-col gap-y-4 px-4">
       <h1 className="text-center text-3xl leading-tight font-bold tracking-tight sm:text-5xl md:text-6xl">
         Daily News,
         <br />
