@@ -86,7 +86,7 @@ export function Navbar() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="py-4 md:hidden">
+          <div className="-mx-8 border-t border-gray-100 px-8 py-4 md:hidden">
             <nav>
               <ul className="flex flex-col gap-y-4">
                 <li>
