@@ -28,4 +28,7 @@ export const categoryGradients: Record<string, string> = {
   react: "from-purple-50 to-purple-100",
   hosting: "from-pink-50 to-pink-100",
   debug: "from-amber-50 to-amber-100",
+  git: "from-teal-50 to-teal-100",
+  typescript: "from-cyan-50 to-teal-100",
+  javascript: "from-rose-50 to-rose-100",
 };
