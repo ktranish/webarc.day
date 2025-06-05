@@ -54,13 +54,13 @@ export default function LegalPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebPage",
-            name: "Legal Documents | biohub.fyi",
+            name: "Legal Documents | webarc.day",
             description:
-              "Access biohub.fyi's legal documents including Terms of Service, Privacy Policy, Cookie Policy, and Refund Policy.",
+              "Access webarc.day's legal documents including Terms of Service, Privacy Policy, Cookie Policy, and Refund Policy.",
             publisher: {
               "@type": "Organization",
-              name: "biohub.fyi",
-              url: "https://biohub.fyi",
+              name: "webarc.day",
+              url: "https://webarc.day",
             },
           }),
         }}

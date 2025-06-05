@@ -5,7 +5,7 @@ export const BASE_URL = "https://www.webarc.day";
 export const LEGAL_PAGE_LINK_CARDS = [
   {
     title: "Terms of Service",
-    description: "Rules and guidelines for using biohub.fyi",
+    description: "Rules and guidelines for using webarc.day",
     href: "/legal/terms",
     emoji: "📜",
     color: "#DBEAFE", // blue-100
