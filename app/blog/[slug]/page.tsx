@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { type Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { formatDistanceToNow, format } from "date-fns";
 
 interface Article {
   id: string;
@@ -95,12 +96,15 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const slug = (await params).slug;
-
   const article = await getArticle(slug);
 
   if (!article) {
     notFound();
   }
+
+  const date = new Date(article.created_at);
+  const now = new Date();
+  const isRecent = now.getTime() - date.getTime() < 7 * 24 * 60 * 60 * 1000;
 
   return (
     <>
@@ -115,23 +119,31 @@ export default async function BlogPostPage({
 
         <article className="prose prose-lg mx-auto w-full max-w-none">
           <header className="mb-8">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+            <div className="flex items-center justify-between gap-4">
+              <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-blue-700/10">
+                {article.tags[0]}
+              </span>
+              <time
+                dateTime={article.created_at}
+                className="text-xs font-medium text-gray-500 tabular-nums"
+              >
+                {isRecent
+                  ? formatDistanceToNow(date, { addSuffix: true })
+                  : format(date, "MMM d, yyyy")}
+              </time>
+            </div>
+            <h1 className="mt-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
               {article.title}
             </h1>
-            <div className="mt-4 flex flex-col gap-4 md:flex-row md:items-center">
-              <time className="text-sm text-gray-500">
-                {new Date(article.created_at).toLocaleDateString()}
-              </time>
-              <div className="flex flex-wrap gap-2">
-                {article.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-gray-500/10"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
+            <div className="mt-6 flex flex-wrap gap-2">
+              {article.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-gray-500/10"
+                >
+                  {tag}
+                </span>
+              ))}
             </div>
           </header>
 

@@ -4,6 +4,7 @@ import { ArrowRight, FileText } from "lucide-react";
 import Link from "next/link";
 import Script from "next/script";
 import { useEffect, useState } from "react";
+import { formatDistanceToNow, format } from "date-fns";
 
 interface Article {
   id: string;
@@ -72,22 +73,34 @@ function EmptyState() {
 }
 
 function BlogPost({ post }: { post: Article }) {
+  const date = new Date(post.created_at);
+  const now = new Date();
+  const isRecent = now.getTime() - date.getTime() < 7 * 24 * 60 * 60 * 1000;
+
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white/80 p-6 backdrop-blur-sm">
+    <Link
+      href={`/blog/${post.slug}`}
+      className="group relative flex flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white/80 p-6 backdrop-blur-sm transition-all hover:border-gray-200 hover:shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+    >
       <div className="flex h-full flex-col justify-between gap-4">
         <div className="flex flex-col gap-y-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between">
             <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-blue-700/10">
               {post.tags[0]}
             </span>
-            <span className="text-sm text-gray-500">
-              {new Date(post.created_at).toLocaleDateString()}
-            </span>
+            <time
+              dateTime={post.created_at}
+              className="text-xs font-medium text-gray-500 tabular-nums"
+            >
+              {isRecent
+                ? formatDistanceToNow(date, { addSuffix: true })
+                : format(date, "MMM d, yyyy")}
+            </time>
           </div>
-          <h2 className="text-xl font-semibold tracking-tight text-gray-900">
+          <h2 className="text-xl font-semibold tracking-tight text-gray-900 transition-colors group-hover:text-blue-600">
             {post.title}
           </h2>
-          <p className="truncate text-gray-600">{post.meta_description}</p>
+          <p className="line-clamp-2 text-gray-600">{post.meta_description}</p>
         </div>
         <div className="flex flex-col gap-y-4">
           <div className="flex flex-wrap gap-2">
@@ -100,16 +113,13 @@ function BlogPost({ post }: { post: Article }) {
               </span>
             ))}
           </div>
-          <Link
-            href={`/blog/${post.slug}`}
-            className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 transition-colors hover:text-blue-700"
-          >
+          <div className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 transition-colors group-hover:text-blue-700">
             Read more
             <ArrowRight className="h-4 w-4" />
-          </Link>
+          </div>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }
 
