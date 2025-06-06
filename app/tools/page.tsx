@@ -14,7 +14,7 @@ const TOOLS: {
   {
     category: "IDE",
     description:
-      "Tabnine is the world’s most contextually aware AI software development platform, helping mature engineering teams speed up and simplify.",
+      "Tabnine is the world's most contextually aware AI software development platform, helping mature engineering teams speed up and simplify.",
     title: "Tabnine",
     url: "https://www.tabnine.com/",
   },
@@ -28,9 +28,51 @@ const TOOLS: {
   {
     category: "IDE",
     description:
-      "GoCodeo is an AI-driven development platform that automates coding, testing, and deployment - right inside your IDE",
+      "GoCodeo is an AI-driven development platform that automates coding, testing, and deployment - right inside your IDE.",
     title: "GoCodeo",
     url: "https://www.gocodeo.com/",
+  },
+  {
+    category: "IDE",
+    description:
+      "Trae (/treɪ/) IDE is your helpful coding partner. It offers features like AI Q&A, code auto-completion, and agent-based AI programming capabilities.",
+    title: "Trae",
+    url: "https://www.trae.ai/",
+  },
+  {
+    category: "IDE",
+    description:
+      "OneCompiler is a versatile, AI-powered Online IDE supporting over 70+ programming languages, designed for developers to write, compile, and execute code seamlessly.",
+    title: "OneCompiler",
+    url: "https://onecompiler.com/",
+  },
+  {
+    category: "IDE",
+    description:
+      "WebStorm is a development tool specially designed for web development. It includes all the tools needed to create, edit, and debug code in JavaScript, HTML, CSS, XML, and other web-related languages.",
+    title: "WebStorm",
+    url: "https://www.jetbrains.com/webstorm/",
+  },
+  {
+    category: "IDE",
+    description:
+      "Selenium IDE (Integrated Development Environment) is a browser extension that allows users to record and replay their interactions with a web application, effectively creating automated test scripts",
+    title: "Selenium",
+    url: "https://www.selenium.dev/selenium-ide/",
+  },
+  {
+    category: "DevOps",
+    description:
+      "Cycle is the leading LowOps platform, built to simplify both container orchestration and infrastructure management. Deploy to your own infrastructure, whether that's on-premise or across multiple clouds.",
+    title: "Cycle",
+    url: "https://cycle.io/",
+  },
+  {
+    category: "Beam",
+    description:
+      "Beam is a new cloud platform designed to streamline the deployment of serverless workloads on both CPUs and GPUs.",
+    title: "Beam",
+    url: "https://www.beam.cloud/",
   },
 ];
 
@@ -102,7 +144,13 @@ function ToolItem({ tool }: { tool: (typeof TOOLS)[0] }) {
   const faviconUrl = `https://www.google.com/s2/favicons?domain=${tool.url}&sz=64`;
 
   return (
-    <article className="group relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-gray-100 bg-white/80 p-6 backdrop-blur-sm transition hover:shadow-sm sm:flex-row sm:items-center sm:gap-6">
+    <a
+      href={tool.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-gray-100 bg-white/80 p-6 backdrop-blur-sm transition hover:shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none sm:flex-row sm:items-center sm:gap-6"
+      aria-label={`Try ${tool.title}`}
+    >
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-50">
         <div className="relative size-6">
           <AppImage
@@ -114,7 +162,7 @@ function ToolItem({ tool }: { tool: (typeof TOOLS)[0] }) {
       </div>
       <div className="flex flex-1 flex-col gap-y-1">
         <div className="flex flex-wrap items-center gap-2">
-          <h2 className="text-lg font-semibold tracking-tight text-gray-900">
+          <h2 className="text-lg font-semibold tracking-tight text-gray-900 transition-colors group-hover:text-blue-600">
             {tool.title}
           </h2>
           <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-blue-700/10">
@@ -123,16 +171,11 @@ function ToolItem({ tool }: { tool: (typeof TOOLS)[0] }) {
         </div>
         <p className="text-sm text-gray-600">{tool.description}</p>
       </div>
-      <a
-        href={tool.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 transition-colors hover:text-blue-700 sm:self-center"
-      >
+      <div className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 transition-colors group-hover:text-blue-700 sm:self-center">
         Try it now
         <ArrowRight className="h-4 w-4" />
-      </a>
-    </article>
+      </div>
+    </a>
   );
 }
 
