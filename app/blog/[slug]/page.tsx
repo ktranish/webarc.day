@@ -146,7 +146,7 @@ export default async function BlogPostPage({
           )}
 
           <div
-            className="prose prose-lg prose-blue mt-24 max-w-none"
+            className="prose prose-lg prose-blue mt-24 max-w-none [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-sm [&_code]:text-gray-900 [&_iframe]:aspect-video [&_iframe]:w-full [&_iframe]:rounded-lg [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-gray-900 [&_pre]:p-4 [&_pre]:text-gray-100 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-inherit [&_table]:my-8 [&_table]:block [&_table]:w-full [&_table]:overflow-x-auto [&_table]:rounded-lg [&_table]:border [&_table]:border-gray-200 [&_table_td]:p-4 [&_table_th]:bg-gray-50 [&_table_th]:p-4 [&_table_th]:font-semibold [&_table_tr]:border-b [&_table_tr]:border-gray-200 [&_table_tr:last-child]:border-0"
             dangerouslySetInnerHTML={{ __html: article.content_html }}
           />
         </article>
