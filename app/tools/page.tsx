@@ -1,17 +1,38 @@
 "use client";
 
+import { AppImage } from "@/components/app-image";
 import { ArrowRight, Wrench } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import Script from "next/script";
 
 const TOOLS: {
-  id: number;
   title: string;
   description: string;
   category: string;
   url: string;
-}[] = [];
+}[] = [
+  {
+    category: "IDE",
+    description:
+      "Tabnine is the world’s most contextually aware AI software development platform, helping mature engineering teams speed up and simplify.",
+    title: "Tabnine",
+    url: "https://www.tabnine.com/",
+  },
+  {
+    category: "IDE",
+    description:
+      "Fine is a software development tool for startup founders, builders and developers.",
+    title: "Fine",
+    url: "https://www.fine.dev/",
+  },
+  {
+    category: "IDE",
+    description:
+      "GoCodeo is an AI-driven development platform that automates coding, testing, and deployment - right inside your IDE",
+    title: "GoCodeo",
+    url: "https://www.gocodeo.com/",
+  },
+];
 
 function ToolsHeader() {
   return (
@@ -83,13 +104,13 @@ function ToolItem({ tool }: { tool: (typeof TOOLS)[0] }) {
   return (
     <article className="group relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-gray-100 bg-white/80 p-6 backdrop-blur-sm transition hover:shadow-sm sm:flex-row sm:items-center sm:gap-6">
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-50">
-        <Image
-          src={faviconUrl}
-          alt={`${tool.title} favicon`}
-          width={24}
-          height={24}
-          className="h-6 w-6"
-        />
+        <div className="relative size-6">
+          <AppImage
+            src={faviconUrl}
+            alt={`${tool.title} favicon`}
+            className="h-full w-full"
+          />
+        </div>
       </div>
       <div className="flex flex-1 flex-col gap-y-1">
         <div className="flex flex-wrap items-center gap-2">
@@ -157,8 +178,8 @@ export default function ToolsPage() {
         <Awards />
         {TOOLS.length > 0 ? (
           <div className="flex flex-col gap-4">
-            {TOOLS.map((tool) => (
-              <ToolItem key={tool.id} tool={tool} />
+            {TOOLS.map((tool, index) => (
+              <ToolItem key={index} tool={tool} />
             ))}
           </div>
         ) : (
