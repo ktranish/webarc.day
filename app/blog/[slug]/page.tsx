@@ -136,7 +136,7 @@ export default async function BlogPostPage({
           </header>
 
           {article.image_url && (
-            <div className="relative mb-8 aspect-video w-full">
+            <div className="relative aspect-video w-full">
               <AppImage
                 src={article.image_url}
                 alt={article.title}
@@ -146,7 +146,7 @@ export default async function BlogPostPage({
           )}
 
           <div
-            className="prose prose-lg prose-blue max-w-none"
+            className="prose prose-lg prose-blue mt-24 max-w-none"
             dangerouslySetInnerHTML={{ __html: article.content_html }}
           />
         </article>
