@@ -50,4 +50,7 @@ export const categoryGradients: Record<string, string> = {
   javascript: "from-rose-50 to-rose-100",
   mcp: "from-indigo-50 to-indigo-100",
   cms: "from-fuchsia-50 to-fuchsia-100",
+  python: "from-emerald-50 to-emerald-100",
+  orm: "from-gray-50 to-gray-100",
+  java: "from-lime-50 to-lime-100",
 };
