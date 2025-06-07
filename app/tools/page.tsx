@@ -74,6 +74,13 @@ const TOOLS: {
     title: "Beam",
     url: "https://www.beam.cloud/",
   },
+  {
+    category: "DevOps",
+    description:
+      "Fly.io makes it easy to scale, reduce latency, and deliver fast, reliable performance without the complexity of traditional cloud setups. ",
+    title: "Fly",
+    url: "https://fly.io/",
+  },
 ];
 
 function ToolsHeader() {
@@ -147,7 +154,7 @@ function ToolItem({ tool }: { tool: (typeof TOOLS)[0] }) {
     <a
       href={tool.url}
       target="_blank"
-      rel="noopener noreferrer"
+      rel="noopener noreferrer nofollow"
       className="group relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-gray-100 bg-white/80 p-6 backdrop-blur-sm transition hover:shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none sm:flex-row sm:items-center sm:gap-6"
       aria-label={`Try ${tool.title}`}
     >
