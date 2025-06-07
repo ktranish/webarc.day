@@ -78,3 +78,23 @@ export function calculateGrowth(current: number, last: number) {
   // Round to 1 decimal place
   return Math.round(growth * 10) / 10;
 }
+
+export function getContentSlots(totalItems: number): {
+  adSlots: number[];
+  newsletterSlots: number[];
+} {
+  const adSlots: number[] = [];
+  const newsletterSlots: number[] = [];
+
+  // Add ad slots every 8 posts
+  for (let i = 8; i <= totalItems; i += 8) {
+    adSlots.push(i);
+  }
+
+  // Add newsletter slots every 20 posts
+  for (let i = 20; i <= totalItems; i += 20) {
+    newsletterSlots.push(i);
+  }
+
+  return { adSlots, newsletterSlots };
+}

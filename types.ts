@@ -1,4 +1,11 @@
-export type NewsItem = {
+export interface ToolItem {
+  title: string;
+  description: string;
+  category: string;
+  url: string;
+}
+
+export interface NewsItem {
   id: string;
   favicon: string;
   title: string;
@@ -6,4 +13,4 @@ export type NewsItem = {
   category: string;
   link: string;
   date: string;
-};
+}

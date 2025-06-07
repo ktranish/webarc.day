@@ -3,7 +3,7 @@
 import { AppImage } from "@/components/app-image";
 import { categoryGradients } from "@/constants";
 import { useAnimatedNumber } from "@/hooks/useAnimatedNumber";
-import { cn } from "@/lib/utils";
+import { cn, getContentSlots } from "@/lib/utils";
 import { type NewsItem } from "@/types";
 import { Eye, Megaphone, MousePointer, TrendingUp, Users } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
@@ -190,26 +190,6 @@ function AdSlot() {
       </div>
     </Link>
   );
-}
-
-function getContentSlots(totalItems: number): {
-  adSlots: number[];
-  newsletterSlots: number[];
-} {
-  const adSlots: number[] = [];
-  const newsletterSlots: number[] = [];
-
-  // Add ad slots every 8 posts
-  for (let i = 8; i <= totalItems; i += 8) {
-    adSlots.push(i);
-  }
-
-  // Add newsletter slots every 20 posts
-  for (let i = 20; i <= totalItems; i += 20) {
-    newsletterSlots.push(i);
-  }
-
-  return { adSlots, newsletterSlots };
 }
 
 function Analytics() {

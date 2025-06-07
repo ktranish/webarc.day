@@ -1,18 +1,10 @@
 import { LIMIT } from "@/constants";
 import client from "@/lib/mongodb";
+import type { NewsItem } from "@/types";
 import { ObjectId } from "mongodb";
 import { NextRequest } from "next/server";
 
-interface Post {
-  favicon: string;
-  title: string;
-  description: string;
-  category: string;
-  link: string;
-  date: string;
-}
-
-interface MongoPost extends Post {
+interface MongoPost extends NewsItem {
   _id: ObjectId;
 }
 
@@ -23,7 +15,7 @@ interface MongoQuery {
 }
 
 interface NewsResponse {
-  posts: Post[];
+  posts: NewsItem[];
   nextCursor: string | null | undefined;
   hasMore: boolean;
 }
