@@ -68,7 +68,7 @@ const TOOLS: {
     url: "https://cycle.io/",
   },
   {
-    category: "Beam",
+    category: "DevOps",
     description:
       "Beam is a new cloud platform designed to streamline the deployment of serverless workloads on both CPUs and GPUs.",
     title: "Beam",
