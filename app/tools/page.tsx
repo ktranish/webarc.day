@@ -77,9 +77,51 @@ const TOOLS: {
   {
     category: "DevOps",
     description:
-      "Fly.io makes it easy to scale, reduce latency, and deliver fast, reliable performance without the complexity of traditional cloud setups. ",
+      "Fly.io makes it easy to scale, reduce latency, and deliver fast, reliable performance without the complexity of traditional cloud setups.",
     title: "Fly",
     url: "https://fly.io/",
+  },
+  {
+    category: "DevOps",
+    description:
+      "Kinsta is a premium managed WordPress hosting platform built for speed, security, and ease of use.",
+    title: "Kinsta",
+    url: "https://kinsta.com/",
+  },
+  {
+    category: "DevOps",
+    description:
+      "Koyeb is a developer-friendly serverless platform designed to let businesses easily deploy reliable and scalable applications globally.",
+    title: "Koyeb",
+    url: "https://www.koyeb.com/",
+  },
+  {
+    category: "DevOps",
+    description:
+      "Qoddi is a fully managed application hosting platform that simplifies deployment for developers.",
+    title: "Qoddi",
+    url: "https://qoddi.com/",
+  },
+  {
+    category: "DevOps",
+    description:
+      "Quix is a telemetry analytics platform that enables you to consolidate high frequency sensor data in a centralized cloud data store",
+    title: "Quix",
+    url: "https://quix.io/",
+  },
+  {
+    category: "DevOps",
+    description:
+      "Railway is a deployment platform designed to streamline the software development life-cycle, starting with instant deployments and effortless scale, extending to CI/CD integrations and built-in observability.",
+    title: "Railway",
+    url: "https://railway.com/",
+  },
+  {
+    category: "DevOps",
+    description:
+      "Reflex is an open-source framework that enables developers to quickly build beautiful, interactive web applications using only Python. ",
+    title: "Reflex",
+    url: "https://reflex.dev/",
   },
 ];
 
