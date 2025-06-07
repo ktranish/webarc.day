@@ -56,7 +56,7 @@ const TOOLS: {
   {
     category: "IDE",
     description:
-      "Selenium IDE (Integrated Development Environment) is a browser extension that allows users to record and replay their interactions with a web application, effectively creating automated test scripts",
+      "Selenium IDE (Integrated Development Environment) is a browser extension that allows users to record and replay their interactions with a web application, effectively creating automated test scripts.",
     title: "Selenium",
     url: "https://www.selenium.dev/selenium-ide/",
   },
@@ -119,9 +119,37 @@ const TOOLS: {
   {
     category: "DevOps",
     description:
-      "Reflex is an open-source framework that enables developers to quickly build beautiful, interactive web applications using only Python. ",
+      "Reflex is an open-source framework that enables developers to quickly build beautiful, interactive web applications using only Python.",
     title: "Reflex",
     url: "https://reflex.dev/",
+  },
+  {
+    category: "Zaebur",
+    description:
+      "Zeabur is a platform that help you deploy your service with one click, No matter what programming language you use, what framework you use.",
+    title: "Zaebur",
+    url: "https://zeabur.com/",
+  },
+  {
+    category: "Observability",
+    description:
+      "Lightrun is a developer observability platform that allows you to securely add logs, metrics, and traces to your live applications in real time—without stopping or redeploying them.",
+    title: "Lightrun",
+    url: "https://lightrun.com/",
+  },
+  {
+    category: "Productivity",
+    description:
+      "Linear app is a product development tool that streamlines issues, projects, and product roadmaps, primarily for software development teams.",
+    title: "Linear",
+    url: "https://linear.app/",
+  },
+  {
+    category: "Observability",
+    description:
+      "Rookout is a cloud-based debugging platform that enables developers to debug live production applications without stopping or redeploying them.",
+    title: "Rookout",
+    url: "https://www.rookout.com/",
   },
 ];
 
