@@ -8,7 +8,7 @@ export async function GET() {
 
     const articles = await collection
       .find({})
-      .sort({ date: -1 })
+      .sort({ created_at: -1 })
       .limit(20)
       .toArray();
 
