@@ -53,4 +53,6 @@ export const categoryGradients: Record<string, string> = {
   python: "from-emerald-50 to-emerald-100",
   orm: "from-gray-50 to-gray-100",
   java: "from-lime-50 to-lime-100",
+  vue: "from-violet-50 to-violet-100",
+  a11y: "from-red-50 to-red-100",
 };
