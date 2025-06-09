@@ -3,9 +3,9 @@
 import { ArrowRight, FileText } from "lucide-react";
 import Link from "next/link";
 import Script from "next/script";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { formatDistanceToNow, format } from "date-fns";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 
 interface Article {
   id: string;
@@ -55,11 +55,13 @@ function EmptyState() {
         <FileText className="h-8 w-8 text-blue-600" />
       </div>
       <div className="flex flex-col gap-y-2">
-        <h2 className="text-xl font-semibold text-gray-900">No Articles Yet</h2>
+        <h2 className="text-xl font-semibold text-gray-900">
+          No Articles Available
+        </h2>
         <p className="text-gray-600">
-          We&apos;re working on bringing you the latest insights and tutorials.
+          We&apos;re currently working on new content.
           <br />
-          Check back soon for new content!
+          Check back soon for new articles!
         </p>
       </div>
       <Link
@@ -137,7 +139,17 @@ export default function BlogPage() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [prefetchedData, setPrefetchedData] = useState<{
+    articles: Article[];
+    nextCursor: string | null;
+    hasMore: boolean;
+  } | null>(null);
+  const observerTarget = useRef<HTMLDivElement>(null);
 
+  // Initial fetch
   useEffect(() => {
     async function fetchArticles() {
       try {
@@ -146,7 +158,9 @@ export default function BlogPage() {
           throw new Error("Failed to fetch articles");
         }
         const data = await response.json();
-        setArticles(data);
+        setArticles(data.articles);
+        setHasMore(data.hasMore);
+        setNextCursor(data.nextCursor);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
@@ -156,6 +170,72 @@ export default function BlogPage() {
 
     fetchArticles();
   }, []);
+
+  // Prefetch next batch when we have a cursor
+  useEffect(() => {
+    if (!nextCursor || loadingMore || !hasMore) return;
+
+    const prefetchNextBatch = async () => {
+      try {
+        const res = await fetch(
+          `/api/articles?cursor=${encodeURIComponent(nextCursor)}`,
+        );
+        const data = await res.json();
+        setPrefetchedData(data);
+      } catch (error) {
+        console.error("Error prefetching next batch:", error);
+      }
+    };
+
+    prefetchNextBatch();
+  }, [nextCursor, loadingMore, hasMore]);
+
+  // Infinite scroll with Intersection Observer
+  useEffect(() => {
+    if (!hasMore || loading || loadingMore) return;
+
+    const observer = new IntersectionObserver(
+      async (entries) => {
+        if (entries[0]?.isIntersecting && hasMore && nextCursor) {
+          setLoadingMore(true);
+          try {
+            // Use prefetched data if available
+            if (prefetchedData) {
+              setArticles((prev) => [...prev, ...prefetchedData.articles]);
+              setHasMore(prefetchedData.hasMore);
+              setNextCursor(prefetchedData.nextCursor);
+              setPrefetchedData(null);
+            } else {
+              const res = await fetch(
+                `/api/articles?cursor=${encodeURIComponent(nextCursor)}`,
+              );
+              const data = await res.json();
+              setArticles((prev) => [...prev, ...data.articles]);
+              setHasMore(data.hasMore);
+              setNextCursor(data.nextCursor);
+            }
+          } catch (error) {
+            console.error("Error loading more articles:", error);
+          } finally {
+            setLoadingMore(false);
+          }
+        }
+      },
+      { threshold: 0.5 },
+    );
+
+    const currentTarget = observerTarget.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+      observer.disconnect();
+    };
+  }, [hasMore, loading, loadingMore, nextCursor, prefetchedData]);
 
   return (
     <>
@@ -203,12 +283,27 @@ export default function BlogPage() {
           <div className="text-center text-red-600">{error}</div>
         ) : articles.length > 0 ? (
           <div className="grid gap-6 sm:grid-cols-2">
-            {articles.map((article) => (
-              <BlogPost key={article.id} post={article} />
-            ))}
+            <AnimatePresence mode="popLayout">
+              {articles.map((article) => (
+                <BlogPost key={article.id} post={article} />
+              ))}
+            </AnimatePresence>
           </div>
         ) : (
           <EmptyState />
+        )}
+        {hasMore && !loadingMore && !loading && (
+          <div
+            ref={observerTarget}
+            className="flex w-full items-center justify-center py-16"
+          >
+            <span className="inline-block size-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
+          </div>
+        )}
+        {!hasMore && !loading && articles.length > 0 && (
+          <div className="flex w-full items-center justify-center py-8 text-base font-medium text-gray-300">
+            All articles loaded.
+          </div>
         )}
       </main>
     </>
