@@ -55,4 +55,5 @@ export const categoryGradients: Record<string, string> = {
   java: "from-lime-50 to-lime-100",
   vue: "from-violet-50 to-violet-100",
   a11y: "from-red-50 to-red-100",
+  css: "from-orange-50 to-orange-100",
 };
