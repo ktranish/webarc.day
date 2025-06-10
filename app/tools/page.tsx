@@ -56,9 +56,9 @@ function Dock() {
 
 function Awards() {
   return (
-    <div className="flex flex-col items-center gap-y-4 pt-12">
+    <div className="mt-12 flex flex-col items-center gap-y-4">
       <p className="text-sm font-medium text-gray-500">Awards recieved</p>
-      <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-8">
+      <div className="flex flex-wrap items-center justify-center gap-4">
         <a
           href="https://fazier.com/launches/webarc-day"
           target="_blank"
@@ -66,6 +66,17 @@ function Awards() {
         >
           <img
             src="https://fazier.com/api/v1/public/badges/embed_image.svg?launch_id=4594&badge_type=daily&theme=light"
+            width="270"
+            alt="Fazier badge"
+          />
+        </a>
+        <a
+          href="https://fazier.com/launches/webarc-day"
+          target="_blank"
+          rel="noopener noreferrer nofollow"
+        >
+          <img
+            src="https://fazier.com/api/v1/public/badges/embed_image.svg?launch_id=4594&badge_type=weekly&theme=light"
             width="270"
             alt="Fazier badge"
           />
