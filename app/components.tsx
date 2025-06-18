@@ -681,7 +681,7 @@ function AISummary({ date, items }: { date: string; items: NewsItem[] }) {
   }, [items]);
 
   return (
-    <div className="mb-8 rounded-2xl bg-gradient-to-br from-blue-50/60 to-white p-8 backdrop-blur-sm">
+    <div className="mb-8 rounded-2xl bg-white/80 p-8 backdrop-blur-sm">
       <div className="mb-4 flex items-center gap-x-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100">
           <svg
