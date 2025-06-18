@@ -1,6 +1,7 @@
 "use client";
 
 import { AppImage } from "@/components/app-image";
+import { TrustBadge } from "@/components/trust-badge";
 import { categoryGradients } from "@/constants";
 import { useAnimatedNumber } from "@/hooks/useAnimatedNumber";
 import { cn, getContentSlots } from "@/lib/utils";
@@ -14,6 +15,113 @@ import {
   useGoogleReCaptcha,
 } from "react-google-recaptcha-v3";
 
+function HeaderNewsletterCTA() {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const { executeRecaptcha } = useGoogleReCaptcha();
+  const { current: waitlistCount } = useAnimatedNumber(1247); // Example count
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setSuccess(null);
+    setError(null);
+    try {
+      if (!executeRecaptcha) {
+        throw new Error("reCAPTCHA not initialized");
+      }
+
+      const token = await executeRecaptcha("newsletter_subscribe");
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, recaptchaToken: token }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setSuccess("You're on the list! Check your inbox.");
+        setEmail("");
+      } else {
+        setError(data.error || "Failed to subscribe.");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to subscribe.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="relative mx-auto mt-8 flex w-full flex-col gap-y-6 rounded-2xl bg-white/50 backdrop-blur-sm">
+      <div className="flex flex-col gap-y-4">
+        <div className="flex items-center justify-between">
+          <TrustBadge />
+          <div className="flex items-center gap-x-2">
+            <span className="text-sm font-medium text-gray-900">
+              {waitlistCount.toLocaleString()}
+            </span>
+            <span className="text-sm text-gray-500">subscribers</span>
+          </div>
+        </div>
+        <div className="flex flex-col gap-y-2">
+          <h3 className="text-lg font-semibold tracking-tight text-gray-900">
+            Get Weekly Web Development Tips
+          </h3>
+          <p className="text-sm text-gray-600">
+            Join our community of developers and get the latest insights,
+            tutorials, and best practices delivered straight to your inbox.
+          </p>
+        </div>
+      </div>
+      <form className="flex w-full flex-col gap-3" onSubmit={handleSubmit}>
+        <div className="flex gap-x-3">
+          <input
+            type="email"
+            placeholder="Enter your email"
+            className="flex-1 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-200 focus:ring-2 focus:ring-blue-100 focus:outline-none"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={loading}
+          />
+          <button
+            type="submit"
+            className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-medium text-white transition hover:bg-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none disabled:opacity-60"
+            disabled={loading}
+          >
+            {loading ? "Subscribing..." : "Subscribe"}
+          </button>
+        </div>
+        <p className="text-xs text-gray-400">
+          This site is protected by reCAPTCHA and the Google
+          <a
+            href="https://policies.google.com/privacy"
+            className="mx-1 text-blue-500"
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+          >
+            Privacy Policy
+          </a>
+          and
+          <a
+            href="https://policies.google.com/terms"
+            className="mx-1 text-blue-500"
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+          >
+            Terms of Service
+          </a>
+          apply.
+        </p>
+        {success && <p className="text-xs text-green-500">{success}</p>}
+        {error && <p className="text-xs text-red-500">{error}</p>}
+      </form>
+    </div>
+  );
+}
+
 function Header() {
   return (
     <header className="flex flex-col gap-y-4 px-4">
@@ -26,6 +134,7 @@ function Header() {
         Discover the latest news, tutorials, and trends in web development, all
         curated and organized in one place.
       </p>
+      <HeaderNewsletterCTA />
     </header>
   );
 }
