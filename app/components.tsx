@@ -76,7 +76,7 @@ function HeaderNewsletterCTA() {
         </div>
       </div>
       <form className="flex w-full flex-col gap-3" onSubmit={handleSubmit}>
-        <div className="flex gap-x-3">
+        <div className="flex flex-col gap-3 sm:flex-row">
           <input
             type="email"
             placeholder="Enter your email"
