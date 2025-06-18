@@ -681,7 +681,7 @@ function AISummary({ date, items }: { date: string; items: NewsItem[] }) {
   }, [items]);
 
   return (
-    <div className="mb-8 rounded-2xl bg-white/80 p-8 backdrop-blur-sm">
+    <div className="mb-8 rounded-2xl bg-gradient-to-br from-blue-50/60 to-white p-8 backdrop-blur-sm">
       <div className="mb-4 flex items-center gap-x-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100">
           <svg
@@ -919,7 +919,7 @@ export function News(): React.ReactElement {
 
           return (
             <Fragment key={date}>
-              <div className="sticky top-16 z-10 -mx-4 bg-white/80 px-4 py-4 backdrop-blur-sm">
+              <div className="sticky top-16 z-[60] -mx-4 bg-white/80 px-4 py-4 backdrop-blur-sm">
                 <h2 className="text-xl font-semibold text-gray-900">{date}</h2>
               </div>
               <AISummary date={date} items={items} />
