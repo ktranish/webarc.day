@@ -58,7 +58,7 @@ function HeaderNewsletterCTA() {
       <div className="rounded-3xl border border-gray-200 bg-white/80 p-8 shadow-sm backdrop-blur-sm">
         <div className="flex flex-col gap-y-6">
           {/* Header with trust elements */}
-          <div className="flex items-start justify-between">
+          <div className="flex items-start sm:justify-between">
             <div className="flex flex-col gap-y-3">
               <TrustBadge />
               <div className="flex flex-col gap-y-1">
@@ -72,7 +72,7 @@ function HeaderNewsletterCTA() {
                 </p>
               </div>
             </div>
-            <div className="flex flex-col items-end gap-y-1 text-right">
+            <div className="hidden flex-col items-end gap-y-1 text-right sm:flex">
               <span className="text-2xl font-bold text-blue-600">
                 {waitlistCount.toLocaleString()}
               </span>
