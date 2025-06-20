@@ -2,7 +2,6 @@ import { BackLink } from "@/components/back-link";
 import { BASE_URL } from "@/constants";
 import type { Metadata } from "next";
 import Link from "next/link";
-import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Sitemap | webarc.day",
@@ -113,72 +112,16 @@ function Section({
 
 export default function SitemapPage() {
   return (
-    <>
-      <Script
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            name: "Sitemap | webarc.day",
-            description:
-              "Explore all pages and features available on webarc.day. Find links to profiles, legal documents, and more.",
-            url: BASE_URL + "/sitemap",
-            publisher: {
-              "@type": "Organization",
-              name: "webarc.day",
-              url: BASE_URL,
-            },
-            breadcrumb: {
-              "@type": "BreadcrumbList",
-              itemListElement: [
-                {
-                  "@type": "ListItem",
-                  position: 1,
-                  item: {
-                    "@id": BASE_URL,
-                    name: "Home",
-                  },
-                },
-                {
-                  "@type": "ListItem",
-                  position: 2,
-                  item: {
-                    "@id": BASE_URL + "/sitemap",
-                    name: "Sitemap",
-                  },
-                },
-              ],
-            },
-            mainEntity: {
-              "@type": "SiteNavigationElement",
-              name: "Site Navigation",
-              url: BASE_URL + "/sitemap",
-              hasPart: SITEMAP_SECTIONS.flatMap((section) =>
-                section.links.map((link) => ({
-                  "@type": "WebPage",
-                  name: link.title,
-                  url: link.href.startsWith("http")
-                    ? link.href
-                    : `${BASE_URL}${link.href}`,
-                })),
-              ),
-            },
-          }),
-        }}
-        id="sitemap-schema"
-        type="application/ld+json"
-      />
-      <main className="mx-auto max-w-5xl px-4 py-8">
-        <BackLink />
-        <div className="flex flex-col gap-y-8">
-          <Header />
-          <div className="grid gap-8 sm:grid-cols-2">
-            {SITEMAP_SECTIONS.map((section) => (
-              <Section key={section.title} {...section} />
-            ))}
-          </div>
+    <main className="mx-auto max-w-5xl px-4 py-8">
+      <BackLink />
+      <div className="flex flex-col gap-y-8">
+        <Header />
+        <div className="grid gap-8 sm:grid-cols-2">
+          {SITEMAP_SECTIONS.map((section) => (
+            <Section key={section.title} {...section} />
+          ))}
         </div>
-      </main>
-    </>
+      </div>
+    </main>
   );
 }

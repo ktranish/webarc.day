@@ -76,69 +76,6 @@ export default function RootLayout({
             `,
           }}
         />
-        <Script
-          id="organization-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "webarc.day",
-              url: BASE_URL,
-              logo: BASE_URL + "/logo.png",
-              description:
-                "Your daily dose of web development news and insights",
-              sameAs: [
-                "https://twitter.com/itsk3nny_",
-                "https://github.com/iamk3nnyt",
-              ],
-              contactPoint: {
-                "@type": "ContactPoint",
-                contactType: "customer service",
-                email: "kenny@ketryon.com",
-                availableLanguage: ["English"],
-              },
-              founder: {
-                "@type": "Person",
-                name: "Kenny Tran",
-                url: "https://kennyt.me",
-              },
-              foundingDate: "2024",
-              knowsAbout: [
-                "Web Development",
-                "Programming",
-                "Developer Tools",
-                "News Aggregation",
-              ],
-            }),
-          }}
-        />
-        <Script
-          id="website-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              name: "webarc.day",
-              url: BASE_URL,
-              description: "Daily curated web development news and tools",
-              publisher: {
-                "@type": "Organization",
-                name: "webarc.day",
-                url: BASE_URL,
-              },
-              potentialAction: {
-                "@type": "SearchAction",
-                target: {
-                  "@type": "EntryPoint",
-                  urlTemplate: BASE_URL + "/search?q={search_term_string}",
-                },
-                "query-input": "required name=search_term_string",
-              },
-            }),
-          }}
-        />
       </head>
       <body className={cn("antialiased", sora.className)}>
         <noscript>

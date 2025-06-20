@@ -6,7 +6,6 @@ import type { ToolItem } from "@/types";
 import { ArrowRight, Megaphone, Wrench } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
-import Script from "next/script";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 function Header() {
@@ -563,59 +562,33 @@ export default function ToolsPage() {
   }, [loading, tools]);
 
   return (
-    <>
-      <Script
-        id="tools-schema"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "ItemList",
-            itemListElement: tools.map((tool, index) => ({
-              "@type": "ListItem",
-              position: index + 1,
-              item: {
-                "@type": "SoftwareApplication",
-                name: tool.title,
-                description: tool.description,
-                applicationCategory: tool.category,
-                url: tool.url,
-              },
-            })),
-          }),
-        }}
-      />
-      <main className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-4 py-16">
-        <Header />
-        <Awards />
-        <FeaturedTools
-          tools={featuredTools}
-          loadingFeatured={loadingFeatured}
+    <main className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-4 py-16">
+      <Header />
+      <Awards />
+      <FeaturedTools tools={featuredTools} loadingFeatured={loadingFeatured} />
+      <section className="relative mx-auto mt-12 flex w-full max-w-5xl flex-col gap-y-4 px-4">
+        <FilterBar
+          categories={categories}
+          selectedCategories={selectedCategories}
+          onCategoryChange={handleCategoryChange}
+          loading={loadingCategories}
         />
-        <section className="relative mx-auto mt-12 flex w-full max-w-5xl flex-col gap-y-4 px-4">
-          <FilterBar
-            categories={categories}
-            selectedCategories={selectedCategories}
-            onCategoryChange={handleCategoryChange}
-            loading={loadingCategories}
-          />
-          {content}
-          {hasMore && !loadingMore && !loading && (
-            <div
-              ref={observerTarget}
-              className="flex w-full items-center justify-center py-16"
-            >
-              <span className="inline-block size-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
-            </div>
-          )}
-          {!hasMore && !loading && tools.length > 0 && (
-            <div className="flex w-full items-center justify-center py-8 text-base font-medium text-gray-300">
-              All tools loaded.
-            </div>
-          )}
-        </section>
-        <Dock />
-      </main>
-    </>
+        {content}
+        {hasMore && !loadingMore && !loading && (
+          <div
+            ref={observerTarget}
+            className="flex w-full items-center justify-center py-16"
+          >
+            <span className="inline-block size-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
+          </div>
+        )}
+        {!hasMore && !loading && tools.length > 0 && (
+          <div className="flex w-full items-center justify-center py-8 text-base font-medium text-gray-300">
+            All tools loaded.
+          </div>
+        )}
+      </section>
+      <Dock />
+    </main>
   );
 }
