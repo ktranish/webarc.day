@@ -68,7 +68,7 @@ export function Footer() {
               <li>
                 <a
                   className="text-gray-600 transition-colors hover:text-blue-600"
-                  href="https://twitter.com/ktranish"
+                  href="https://twitter.com/itsk3nny_"
                   rel="noopener noreferrer nofollow"
                   target="_blank"
                 >
@@ -78,7 +78,7 @@ export function Footer() {
               <li>
                 <a
                   className="text-gray-600 transition-colors hover:text-blue-600"
-                  href="https://github.com/ktranish"
+                  href="https://github.com/iamk3nnyt"
                   rel="noopener noreferrer nofollow"
                   target="_blank"
                 >

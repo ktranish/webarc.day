@@ -25,7 +25,6 @@ export function Navbar() {
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:block">
             <ul className="flex items-center gap-x-8">
               <li>
@@ -70,7 +69,6 @@ export function Navbar() {
             </ul>
           </nav>
 
-          {/* Mobile Menu Button */}
           <button
             className="md:hidden"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -84,7 +82,6 @@ export function Navbar() {
           </button>
         </div>
 
-        {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="-mx-4 border-t border-gray-100 p-4 md:hidden">
             <nav>

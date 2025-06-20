@@ -59,8 +59,8 @@ const SITEMAP_SECTIONS = [
   {
     title: "Connect",
     links: [
-      { title: "Twitter", href: "https://twitter.com/ktranish" },
-      { title: "Github", href: "https://github.com/ktranish" },
+      { title: "Twitter", href: "https://twitter.com/itsk3nny_" },
+      { title: "Github", href: "https://github.com/iamk3nnyt" },
     ],
   },
 ];

@@ -108,11 +108,7 @@ export default function RootLayout({
               name: "webarc.day",
               url: "https://www.webarc.day",
               logo: "https://www.webarc.day/logo.png",
-              sameAs: [
-                "https://twitter.com/ktranish",
-                "https://github.com/ktranish",
-                "https://linkedin.com/in/ktranish",
-              ],
+              sameAs: [],
               contactPoint: {
                 "@type": "ContactPoint",
                 contactType: "customer service",
