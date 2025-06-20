@@ -47,9 +47,13 @@ function BlogHeader() {
   );
 }
 
-function SearchCTA() {
-  const [searchQuery, setSearchQuery] = useState("");
-
+function SearchCTA({
+  searchQuery,
+  setSearchQuery,
+}: {
+  searchQuery: string;
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+}) {
   return (
     <div className="relative mx-auto w-full max-w-5xl">
       <div className="rounded-3xl bg-white/80 py-6 backdrop-blur-sm">
@@ -177,6 +181,7 @@ export default function BlogPage() {
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [prefetchedData, setPrefetchedData] = useState<{
     articles: Article[];
     nextCursor: string | null;
@@ -184,11 +189,26 @@ export default function BlogPage() {
   } | null>(null);
   const observerTarget = useRef<HTMLDivElement>(null);
 
+  // Reset articles when search changes
+  useEffect(() => {
+    setArticles([]);
+    setHasMore(true);
+    setNextCursor(null);
+    setPrefetchedData(null);
+    setLoading(true);
+    setError(null);
+  }, [searchQuery]);
+
   // Initial fetch
   useEffect(() => {
     async function fetchArticles() {
       try {
-        const response = await fetch("/api/articles");
+        const params = new URLSearchParams();
+        if (searchQuery.trim()) {
+          params.append("search", searchQuery.trim());
+        }
+
+        const response = await fetch(`/api/articles?${params.toString()}`);
         if (!response.ok) {
           throw new Error("Failed to fetch articles");
         }
@@ -204,7 +224,7 @@ export default function BlogPage() {
     }
 
     fetchArticles();
-  }, []);
+  }, [searchQuery]);
 
   // Prefetch next batch when we have a cursor
   useEffect(() => {
@@ -212,9 +232,13 @@ export default function BlogPage() {
 
     const prefetchNextBatch = async () => {
       try {
-        const res = await fetch(
-          `/api/articles?cursor=${encodeURIComponent(nextCursor)}`,
-        );
+        const params = new URLSearchParams();
+        params.append("cursor", nextCursor);
+        if (searchQuery.trim()) {
+          params.append("search", searchQuery.trim());
+        }
+
+        const res = await fetch(`/api/articles?${params.toString()}`);
         const data = await res.json();
         setPrefetchedData(data);
       } catch (error) {
@@ -223,7 +247,7 @@ export default function BlogPage() {
     };
 
     prefetchNextBatch();
-  }, [nextCursor, loadingMore, hasMore]);
+  }, [nextCursor, loadingMore, hasMore, searchQuery]);
 
   // Infinite scroll with Intersection Observer
   useEffect(() => {
@@ -241,9 +265,13 @@ export default function BlogPage() {
               setNextCursor(prefetchedData.nextCursor);
               setPrefetchedData(null);
             } else {
-              const res = await fetch(
-                `/api/articles?cursor=${encodeURIComponent(nextCursor)}`,
-              );
+              const params = new URLSearchParams();
+              params.append("cursor", nextCursor);
+              if (searchQuery.trim()) {
+                params.append("search", searchQuery.trim());
+              }
+
+              const res = await fetch(`/api/articles?${params.toString()}`);
               const data = await res.json();
               setArticles((prev) => [...prev, ...data.articles]);
               setHasMore(data.hasMore);
@@ -270,12 +298,12 @@ export default function BlogPage() {
       }
       observer.disconnect();
     };
-  }, [hasMore, loading, loadingMore, nextCursor, prefetchedData]);
+  }, [hasMore, loading, loadingMore, nextCursor, prefetchedData, searchQuery]);
 
   return (
     <main className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-8 px-4 py-16">
       <BlogHeader />
-      <SearchCTA />
+      <SearchCTA searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       {loading ? (
         <div className="flex w-full items-center justify-center">
           <span className="inline-block size-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
@@ -303,7 +331,7 @@ export default function BlogPage() {
       )}
       {!hasMore && !loading && articles.length > 0 && (
         <div className="flex w-full items-center justify-center py-8 text-base font-medium text-gray-300">
-          All articles loaded.
+          {searchQuery ? "No more search results." : "All articles loaded."}
         </div>
       )}
     </main>

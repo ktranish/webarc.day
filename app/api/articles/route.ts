@@ -18,6 +18,11 @@ interface MongoArticle {
 
 interface MongoQuery {
   _id?: { $lt: ObjectId };
+  $or?: Array<{
+    title?: { $regex: RegExp };
+    meta_description?: { $regex: RegExp };
+    tags?: { $in: RegExp[] };
+  }>;
 }
 
 interface ArticlesResponse {
@@ -32,10 +37,25 @@ export async function GET(req: NextRequest) {
     const collection = db.collection<MongoArticle>("articles");
     const { searchParams } = new URL(req.url);
     const cursor = searchParams.get("cursor");
+    const search = searchParams.get("search")?.trim();
 
     const query: MongoQuery = {};
+
+    // Add cursor-based pagination
     if (cursor) {
       query._id = { $lt: new ObjectId(cursor) };
+    }
+
+    // Add search functionality
+    if (search && search.length > 0) {
+      const searchRegex = new RegExp(search, "i");
+      const tagRegex = new RegExp(search, "i");
+
+      query.$or = [
+        { title: { $regex: searchRegex } },
+        { meta_description: { $regex: searchRegex } },
+        { tags: { $in: [tagRegex] } },
+      ];
     }
 
     const articles = await collection
