@@ -119,6 +119,6 @@ button,
 
   .shimmer {
     animation: none !important;
-    background: #232326 !important;
+    background: #f0f0f0 !important;
   }
 }
