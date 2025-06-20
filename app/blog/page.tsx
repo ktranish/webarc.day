@@ -1,7 +1,7 @@
 "use client";
 
 import { format, formatDistanceToNow } from "date-fns";
-import { ArrowRight, FileText } from "lucide-react";
+import { ArrowRight, FileText, Search, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -44,6 +44,42 @@ function BlogHeader() {
         web development.
       </p>
     </header>
+  );
+}
+
+function SearchCTA() {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  return (
+    <div className="relative mx-auto w-full max-w-5xl">
+      <div className="rounded-3xl bg-white/80 py-6 backdrop-blur-sm">
+        <div className="flex flex-col gap-y-6">
+          {/* Search Input */}
+          <div className="relative">
+            <div className="relative">
+              <Search className="absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search articles by title, content, or tags..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full rounded-xl border border-gray-200 bg-white px-12 py-3 text-sm text-gray-900 transition-colors placeholder:text-gray-400 focus:border-blue-200 focus:ring-2 focus:ring-blue-100 focus:outline-none"
+                aria-label="Search articles"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute top-1/2 right-4 -translate-y-1/2"
+                  aria-label="Clear search"
+                >
+                  <X className="h-4 w-4 text-gray-400 transition-colors hover:text-gray-600" />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -239,6 +275,7 @@ export default function BlogPage() {
   return (
     <main className="relative mx-auto flex w-full max-w-5xl flex-col gap-y-8 px-4 py-16">
       <BlogHeader />
+      <SearchCTA />
       {loading ? (
         <div className="flex w-full items-center justify-center">
           <span className="inline-block size-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
