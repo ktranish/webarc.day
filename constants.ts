@@ -8,14 +8,14 @@ export const LEGAL_PAGE_LINK_CARDS = [
     description: "Rules and guidelines for using webarc.day",
     href: "/legal/terms",
     emoji: "📜",
-    color: "#DBEAFE", // blue-100
+    color: "#DBEAFE",
   },
   {
     title: "Privacy Policy",
     description: "How we collect, use, and protect your data",
     href: "/legal/privacy-policy",
     emoji: "🔒",
-    color: "#D1FAE5", // green-100
+    color: "#D1FAE5",
   },
 ];
 
