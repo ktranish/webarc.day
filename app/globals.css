@@ -91,7 +91,7 @@ button,
 }
 
 .shimmer {
-  background: linear-gradient(90deg, #232326 25%, #18181b 50%, #232326 75%);
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
   animation: var(--animate-shimmer);
 }
