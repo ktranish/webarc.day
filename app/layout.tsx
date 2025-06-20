@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "./",
     languages: {
-      "en-US": "https://www.webarc.day",
+      "en-US": BASE_URL,
     },
   },
   openGraph: {
@@ -106,8 +106,8 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               name: "webarc.day",
-              url: "https://www.webarc.day",
-              logo: "https://www.webarc.day/logo.png",
+              url: BASE_URL,
+              logo: BASE_URL + "/logo.png",
               sameAs: [],
               contactPoint: {
                 "@type": "ContactPoint",

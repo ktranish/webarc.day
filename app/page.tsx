@@ -1,3 +1,4 @@
+import { BASE_URL } from "@/constants";
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Landing } from "./components";
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
     description:
       "Discover the latest news, tutorials, and trends in web development, all curated and organized in one place.",
     type: "website",
-    url: "https://www.webarc.day",
+    url: BASE_URL,
   },
   twitter: {
     card: "summary_large_image",
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
       "Discover the latest news, tutorials, and trends in web development, all curated and organized in one place.",
   },
   alternates: {
-    canonical: "https://www.webarc.day",
+    canonical: BASE_URL,
   },
 };
 
@@ -35,16 +36,11 @@ export default function Page() {
             name: "webarc.day",
             description:
               "Your daily source for web development news and resources",
-            url: "https://www.webarc.day",
-            potentialAction: {
-              "@type": "SearchAction",
-              target: "https://www.webarc.day/search?q={search_term_string}",
-              "query-input": "required name=search_term_string",
-            },
+            url: BASE_URL,
             publisher: {
               "@type": "Organization",
               name: "webarc.day",
-              url: "https://www.webarc.day",
+              url: BASE_URL,
             },
           }),
         }}

@@ -1,3 +1,4 @@
+import { BASE_URL } from "@/constants";
 import type { Metadata } from "next";
 import Script from "next/script";
 import { ContactClient } from "./components";
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
     description:
       "Get in touch with the webarc.day team. We're here to help with any questions or feedback you may have.",
     type: "website",
-    url: "https://www.webarc.day/contact",
+    url: BASE_URL + "/contact",
   },
   twitter: {
     card: "summary",
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
       "Get in touch with the webarc.day team. We're here to help with any questions or feedback you may have.",
   },
   alternates: {
-    canonical: "https://www.webarc.day/contact",
+    canonical: BASE_URL + "/contact",
   },
   robots: {
     index: true,
@@ -39,11 +40,11 @@ export default function ContactPage() {
             name: "Contact webarc.day",
             description:
               "Get in touch with the webarc.day team. We're here to help with any questions or feedback you may have.",
-            url: "https://www.webarc.day/contact",
+            url: BASE_URL + "/contact",
             mainEntity: {
               "@type": "Organization",
               name: "webarc.day",
-              url: "https://www.webarc.day",
+              url: BASE_URL,
             },
             breadcrumb: {
               "@type": "BreadcrumbList",
@@ -52,7 +53,7 @@ export default function ContactPage() {
                   "@type": "ListItem",
                   position: 1,
                   item: {
-                    "@id": "https://www.webarc.day",
+                    "@id": BASE_URL,
                     name: "Home",
                   },
                 },
@@ -60,7 +61,7 @@ export default function ContactPage() {
                   "@type": "ListItem",
                   position: 2,
                   item: {
-                    "@id": "https://www.webarc.day/contact",
+                    "@id": BASE_URL + "/contact",
                     name: "Contact",
                   },
                 },

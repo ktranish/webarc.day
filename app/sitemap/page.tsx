@@ -1,4 +1,5 @@
 import { BackLink } from "@/components/back-link";
+import { BASE_URL } from "@/constants";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Script from "next/script";
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
     description:
       "Explore all pages and features available on webarc.day. Find links to profiles, legal documents, and more.",
     type: "website",
-    url: "https://www.webarc.day/sitemap",
+    url: BASE_URL + "/sitemap",
   },
   twitter: {
     card: "summary",
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
       "Explore all pages and features available on webarc.day. Find links to profiles, legal documents, and more.",
   },
   alternates: {
-    canonical: "https://www.webarc.day/sitemap",
+    canonical: BASE_URL + "/sitemap",
   },
   robots: {
     index: true,
@@ -119,11 +120,11 @@ export default function SitemapPage() {
             name: "Sitemap | webarc.day",
             description:
               "Explore all pages and features available on webarc.day. Find links to profiles, legal documents, and more.",
-            url: "https://www.webarc.day/sitemap",
+            url: BASE_URL + "/sitemap",
             publisher: {
               "@type": "Organization",
               name: "webarc.day",
-              url: "https://www.webarc.day",
+              url: BASE_URL,
             },
             breadcrumb: {
               "@type": "BreadcrumbList",
@@ -132,7 +133,7 @@ export default function SitemapPage() {
                   "@type": "ListItem",
                   position: 1,
                   item: {
-                    "@id": "https://www.webarc.day",
+                    "@id": BASE_URL,
                     name: "Home",
                   },
                 },
@@ -140,7 +141,7 @@ export default function SitemapPage() {
                   "@type": "ListItem",
                   position: 2,
                   item: {
-                    "@id": "https://www.webarc.day/sitemap",
+                    "@id": BASE_URL + "/sitemap",
                     name: "Sitemap",
                   },
                 },
@@ -149,14 +150,14 @@ export default function SitemapPage() {
             mainEntity: {
               "@type": "SiteNavigationElement",
               name: "Site Navigation",
-              url: "https://www.webarc.day/sitemap",
+              url: BASE_URL + "/sitemap",
               hasPart: SITEMAP_SECTIONS.flatMap((section) =>
                 section.links.map((link) => ({
                   "@type": "WebPage",
                   name: link.title,
                   url: link.href.startsWith("http")
                     ? link.href
-                    : `https://www.webarc.day${link.href}`,
+                    : `${BASE_URL}${link.href}`,
                 })),
               ),
             },

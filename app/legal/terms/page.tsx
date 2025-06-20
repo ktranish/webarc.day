@@ -1,4 +1,5 @@
 import { BackLink } from "@/components/back-link";
+import { BASE_URL } from "@/constants";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Script from "next/script";
@@ -39,7 +40,7 @@ export default function TermsOfService() {
             publisher: {
               "@type": "Organization",
               name: "webarc.day",
-              url: "https://www.webarc.day",
+              url: BASE_URL,
             },
             mainEntity: {
               "@type": "Article",

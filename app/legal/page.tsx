@@ -1,4 +1,4 @@
-import { LEGAL_PAGE_LINK_CARDS } from "@/constants";
+import { BASE_URL, LEGAL_PAGE_LINK_CARDS } from "@/constants";
 import Link from "next/link";
 import Script from "next/script";
 
@@ -60,7 +60,7 @@ export default function LegalPage() {
             publisher: {
               "@type": "Organization",
               name: "webarc.day",
-              url: "https://www.webarc.day",
+              url: BASE_URL,
             },
           }),
         }}

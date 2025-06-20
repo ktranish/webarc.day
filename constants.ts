@@ -1,6 +1,7 @@
 export const LIMIT = 12;
 
-export const BASE_URL = "https://www.webarc.day";
+export const BASE_URL =
+  process.env.NEXT_PUBLIC_BASE_URL || "https://www.webarc.day";
 
 export const LEGAL_PAGE_LINK_CARDS = [
   {

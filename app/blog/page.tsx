@@ -1,11 +1,12 @@
 "use client";
 
+import { BASE_URL } from "@/constants";
+import { format, formatDistanceToNow } from "date-fns";
 import { ArrowRight, FileText } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
-import { formatDistanceToNow, format } from "date-fns";
-import { motion, AnimatePresence } from "motion/react";
 
 interface Article {
   id: string;
@@ -247,11 +248,11 @@ export default function BlogPage() {
             name: "Web Development Insights & Tutorials | webarc.day",
             description:
               "Stay updated with the latest trends, technologies, and best practices in web development.",
-            url: "https://www.webarc.day/blog",
+            url: BASE_URL + "/blog",
             publisher: {
               "@type": "Organization",
               name: "webarc.day",
-              url: "https://www.webarc.day",
+              url: BASE_URL,
             },
             blogPost: articles.map((article) => ({
               "@type": "BlogPosting",
@@ -263,7 +264,7 @@ export default function BlogPage() {
                 "@type": "Organization",
                 name: "webarc.day",
               },
-              url: `https://www.webarc.day/blog/${article.slug}`,
+              url: `${BASE_URL}/blog/${article.slug}`,
               image: article.image_url,
               keywords: article.tags.join(", "),
             })),

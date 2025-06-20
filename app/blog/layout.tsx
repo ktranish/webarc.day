@@ -1,3 +1,4 @@
+import { BASE_URL } from "@/constants";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
     description:
       "Stay updated with the latest trends, technologies, and best practices in web development. Expert insights, tutorials, and guides.",
     type: "website",
-    url: "https://www.webarc.day/blog",
+    url: BASE_URL + "/blog",
   },
   twitter: {
     card: "summary_large_image",
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
       "Stay updated with the latest trends, technologies, and best practices in web development. Expert insights, tutorials, and guides.",
   },
   alternates: {
-    canonical: "https://www.webarc.day/blog",
+    canonical: BASE_URL + "/blog",
   },
   robots: {
     index: true,
