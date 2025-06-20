@@ -9,7 +9,7 @@ import { type NewsItem } from "@/types";
 import { Eye, Megaphone, MousePointer, TrendingUp, Users } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   GoogleReCaptchaProvider,
   useGoogleReCaptcha,
@@ -934,8 +934,8 @@ export function News(): React.ReactElement {
           );
 
           return (
-            <Fragment key={date}>
-              <div className="sticky top-16 z-[60] -mx-4 bg-white/80 px-4 py-4 backdrop-blur-sm">
+            <div key={date} className="relative">
+              <div className="sticky top-16 z-50 -mx-4 bg-white/80 px-4 py-4 backdrop-blur-sm">
                 <h2 className="text-xl font-semibold text-gray-900">{date}</h2>
               </div>
               <AISummary date={date} items={items} />
@@ -1010,7 +1010,7 @@ export function News(): React.ReactElement {
                   );
                 })}
               </div>
-            </Fragment>
+            </div>
           );
         })}
       </div>
