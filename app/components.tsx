@@ -54,70 +54,86 @@ function HeaderNewsletterCTA() {
   }
 
   return (
-    <div className="relative mx-auto mt-8 flex w-full flex-col gap-y-6 rounded-2xl bg-white/50 backdrop-blur-sm">
-      <div className="flex flex-col gap-y-4">
-        <div className="flex items-center justify-between">
-          <TrustBadge />
-          <div className="flex items-center gap-x-2">
-            <span className="text-sm font-medium text-gray-900">
-              {waitlistCount.toLocaleString()}
-            </span>
-            <span className="text-sm text-gray-500">subscribers</span>
+    <div className="relative mx-auto mt-8 w-full max-w-2xl">
+      <div className="rounded-3xl border border-gray-200 bg-white/80 p-8 shadow-sm backdrop-blur-sm">
+        <div className="flex flex-col gap-y-6">
+          {/* Header with trust elements */}
+          <div className="flex items-start justify-between">
+            <div className="flex flex-col gap-y-3">
+              <TrustBadge />
+              <div className="flex flex-col gap-y-1">
+                <h3 className="text-xl font-semibold tracking-tight text-gray-900">
+                  Get Weekly Web Development Tips
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Join our community of developers and get the latest insights,
+                  tutorials, and best practices delivered straight to your
+                  inbox.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-col items-end gap-y-1 text-right">
+              <span className="text-2xl font-bold text-blue-600">
+                {waitlistCount.toLocaleString()}
+              </span>
+              <span className="text-sm text-gray-500">subscribers</span>
+            </div>
           </div>
-        </div>
-        <div className="flex flex-col gap-y-2">
-          <h3 className="text-lg font-semibold tracking-tight text-gray-900">
-            Get Weekly Web Development Tips
-          </h3>
-          <p className="text-sm text-gray-600">
-            Join our community of developers and get the latest insights,
-            tutorials, and best practices delivered straight to your inbox.
-          </p>
+
+          {/* Form */}
+          <form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <input
+                type="email"
+                placeholder="Enter your email address"
+                className="flex-1 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition-colors placeholder:text-gray-400 focus:border-blue-200 focus:ring-2 focus:ring-blue-100 focus:outline-none"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+              />
+              <button
+                type="submit"
+                className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={loading}
+              >
+                {loading ? "Subscribing..." : "Subscribe"}
+              </button>
+            </div>
+
+            {/* Status messages */}
+            {success && (
+              <p className="text-sm font-medium text-green-600">{success}</p>
+            )}
+            {error && (
+              <p className="text-sm font-medium text-red-600">{error}</p>
+            )}
+
+            {/* Legal text */}
+            <p className="text-xs leading-relaxed text-gray-400">
+              This site is protected by reCAPTCHA and the Google{" "}
+              <a
+                href="https://policies.google.com/privacy"
+                className="text-blue-500 transition-colors hover:text-blue-600"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+              >
+                Privacy Policy
+              </a>{" "}
+              and{" "}
+              <a
+                href="https://policies.google.com/terms"
+                className="text-blue-500 transition-colors hover:text-blue-600"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+              >
+                Terms of Service
+              </a>{" "}
+              apply.
+            </p>
+          </form>
         </div>
       </div>
-      <form className="flex w-full flex-col gap-3" onSubmit={handleSubmit}>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <input
-            type="email"
-            placeholder="Enter your email"
-            className="flex-1 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-200 focus:ring-2 focus:ring-blue-100 focus:outline-none"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={loading}
-          />
-          <button
-            type="submit"
-            className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-medium text-white transition hover:bg-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none disabled:opacity-60"
-            disabled={loading}
-          >
-            {loading ? "Subscribing..." : "Subscribe"}
-          </button>
-        </div>
-        <p className="text-xs text-gray-400">
-          This site is protected by reCAPTCHA and the Google
-          <a
-            href="https://policies.google.com/privacy"
-            className="mx-1 text-blue-500"
-            target="_blank"
-            rel="noopener noreferrer nofollow"
-          >
-            Privacy Policy
-          </a>
-          and
-          <a
-            href="https://policies.google.com/terms"
-            className="mx-1 text-blue-500"
-            target="_blank"
-            rel="noopener noreferrer nofollow"
-          >
-            Terms of Service
-          </a>
-          apply.
-        </p>
-        {success && <p className="text-xs text-green-500">{success}</p>}
-        {error && <p className="text-xs text-red-500">{error}</p>}
-      </form>
     </div>
   );
 }
