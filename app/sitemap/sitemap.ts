@@ -29,7 +29,7 @@ export default async function sitemap({
     .toArray();
 
   return (articles || []).map((article) => ({
-    url: `${BASE_URL}/${article.slug}`,
+    url: `${BASE_URL}/blog/${article.slug}`,
     lastModified: new Date(article.created_at),
     changeFrequency: "weekly" as const,
     priority: 0.7,
