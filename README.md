@@ -2,6 +2,11 @@
 
 A modern, beautiful, and open-source web application for aggregating and discovering the latest news, tutorials, and trends in web development. Powered by sources like Dev.to, Reddit, and more, webarc.day curates the best content for developers, designers, and tech enthusiasts—every day.
 
+![Reflex Domain](https://img.shields.io/badge/Next.js-15.3.3-black?style=for-the-badge&logo=next.js)
+![React](https://img.shields.io/badge/React-19.0.0-blue?style=for-the-badge&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css)
+
 ---
 
 ## 🚀 Features
