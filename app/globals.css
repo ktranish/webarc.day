@@ -9,6 +9,11 @@
   visibility: hidden;
 }
 
+/* Base styles */
+* {
+  scroll-margin-top: 8.5rem;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -26,26 +31,72 @@ button,
   cursor: default;
 }
 
+/* Animation System */
 @theme {
-  --animate-shimmer: shimmer 2s linear infinite;
+  /* Animation Durations */
+  --duration-fast: 0.2s;
+  --duration-normal: 0.5s;
+  --duration-slow: 2s;
 
-  @keyframes shimmer {
-    0% {
-      background-position: -200% 0;
-    }
-    100% {
-      background-position: 200% 0;
-    }
+  /* Animation Timing Functions */
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-linear: linear;
+
+  /* Animation Definitions */
+  --animate-fade-in: fadeIn var(--duration-normal) var(--ease-out) forwards;
+  --animate-fade-out: fadeOut var(--duration-normal) var(--ease-out) forwards;
+  --animate-shimmer: shimmer var(--duration-slow) var(--ease-linear) infinite;
+}
+
+/* Keyframe Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Animation Classes */
+.animate-fade-in {
+  animation: var(--animate-fade-in);
+}
+
+.animate-fade-out {
+  animation: var(--animate-fade-out);
+}
+
 .shimmer {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, #232326 25%, #18181b 50%, #232326 75%);
   background-size: 200% 100%;
   animation: var(--animate-shimmer);
 }
 
-/* Respect user preferences for reduced motion */
+/* Accessibility: Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
@@ -54,8 +105,20 @@ button,
     scroll-behavior: auto !important;
   }
 
+  .animate-fade-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .animate-fade-out {
+    animation: none !important;
+    opacity: 0 !important;
+    transform: none !important;
+  }
+
   .shimmer {
     animation: none !important;
-    background: #f0f0f0 !important;
+    background: #232326 !important;
   }
 }
