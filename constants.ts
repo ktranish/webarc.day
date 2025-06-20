@@ -18,6 +18,20 @@ export const LEGAL_PAGE_LINK_CARDS = [
     emoji: "🔒",
     color: "#D1FAE5",
   },
+  {
+    title: "Cookie Policy",
+    description: "How we use cookies and similar technologies",
+    href: "/legal/cookies",
+    emoji: "🍪",
+    color: "#FFEDD5",
+  },
+  {
+    title: "Refund Policy",
+    description: "Our terms for refunds and cancellations",
+    href: "/legal/refund",
+    emoji: "💸",
+    color: "#F3E8FF",
+  },
 ];
 
 export const categoryGradients: Record<string, string> = {

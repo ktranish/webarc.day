@@ -59,6 +59,22 @@ export function Footer() {
                   Terms
                 </Link>
               </li>
+              <li>
+                <Link
+                  className="text-gray-600 transition-colors hover:text-blue-600"
+                  href="/legal/cookies"
+                >
+                  Cookies
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className="text-gray-600 transition-colors hover:text-blue-600"
+                  href="/legal/refund"
+                >
+                  Refund
+                </Link>
+              </li>
             </ul>
           </div>
 

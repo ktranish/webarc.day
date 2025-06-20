@@ -1,34 +1,14 @@
-import { BASE_URL } from "@/constants";
+import { buildMetadata } from "@/lib/metadata";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
+  type: "blog-index",
   title: "Blog | webarc.day",
   description:
     "Stay updated with the latest trends, technologies, and best practices in web development. Expert insights, tutorials, and guides.",
-  openGraph: {
-    title: "Blog | webarc.day",
-    description:
-      "Stay updated with the latest trends, technologies, and best practices in web development. Expert insights, tutorials, and guides.",
-    type: "website",
-    url: BASE_URL + "/blog",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Blog | webarc.day",
-    description:
-      "Stay updated with the latest trends, technologies, and best practices in web development. Expert insights, tutorials, and guides.",
-  },
-  alternates: {
-    canonical: BASE_URL + "/blog",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-  other: {
-    language: "en",
-  },
-};
+  path: "/blog",
+  posts: [], // Will be populated dynamically from the API
+});
 
 export default function BlogLayout({
   children,

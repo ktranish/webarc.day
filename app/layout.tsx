@@ -1,6 +1,7 @@
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { BASE_URL } from "@/constants";
+import { buildMetadata } from "@/lib/metadata";
 import { cn } from "@/lib/utils";
 import { Analytics } from "@vercel/analytics/next";
 import { MotionConfig } from "motion/react";
@@ -21,41 +22,18 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export const metadata: Metadata = {
+const baseMetadata = buildMetadata({
+  type: "news",
   title: "Daily News, Curated for You",
   description:
     "Discover the latest news, tutorials, and trends in web development, all curated and organized in one place.",
+  path: "/",
+  articles: [], // Will be populated dynamically
+});
+
+export const metadata: Metadata = {
+  ...baseMetadata,
   metadataBase: new URL(BASE_URL),
-  alternates: {
-    canonical: "./",
-    languages: {
-      "en-US": BASE_URL,
-    },
-  },
-  openGraph: {
-    title: "Daily News, Curated for You",
-    description:
-      "Discover the latest news, tutorials, and trends in web development, all curated and organized in one place.",
-    url: "./",
-    siteName: "webarc.day",
-    images: [
-      {
-        url: "/og.png",
-        width: 1200,
-        height: 630,
-        alt: "webarc.day - Your Daily Web Development News Source",
-      },
-    ],
-    locale: "en_US",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Daily News, Curated for You",
-    description:
-      "Discover the latest news, tutorials, and trends in web development, all curated and organized in one place.",
-    images: ["/og.png"],
-  },
   robots: {
     index: true,
     follow: true,
@@ -108,12 +86,55 @@ export default function RootLayout({
               name: "webarc.day",
               url: BASE_URL,
               logo: BASE_URL + "/logo.png",
-              sameAs: [],
+              description:
+                "Your daily dose of web development news and insights",
+              sameAs: [
+                "https://twitter.com/itsk3nny_",
+                "https://github.com/iamk3nnyt",
+              ],
               contactPoint: {
                 "@type": "ContactPoint",
                 contactType: "customer service",
                 email: "kenny@ketryon.com",
                 availableLanguage: ["English"],
+              },
+              founder: {
+                "@type": "Person",
+                name: "Kenny Tran",
+                url: "https://kennyt.me",
+              },
+              foundingDate: "2024",
+              knowsAbout: [
+                "Web Development",
+                "Programming",
+                "Developer Tools",
+                "News Aggregation",
+              ],
+            }),
+          }}
+        />
+        <Script
+          id="website-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "webarc.day",
+              url: BASE_URL,
+              description: "Daily curated web development news and tools",
+              publisher: {
+                "@type": "Organization",
+                name: "webarc.day",
+                url: BASE_URL,
+              },
+              potentialAction: {
+                "@type": "SearchAction",
+                target: {
+                  "@type": "EntryPoint",
+                  urlTemplate: BASE_URL + "/search?q={search_term_string}",
+                },
+                "query-input": "required name=search_term_string",
               },
             }),
           }}

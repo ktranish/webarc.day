@@ -29,6 +29,18 @@ export async function GET() {
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>${BASE_URL}/legal/cookies</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>${BASE_URL}/legal/refund</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
     <loc>${BASE_URL}/contact</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>daily</changefreq>

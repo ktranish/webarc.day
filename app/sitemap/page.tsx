@@ -55,6 +55,8 @@ const SITEMAP_SECTIONS = [
       { title: "Legal index", href: "/legal" },
       { title: "Terms of Service", href: "/legal/terms" },
       { title: "Privacy Policy", href: "/legal/privacy-policy" },
+      { title: "Cookie Policy", href: "/legal/cookies" },
+      { title: "Refund Policy", href: "/legal/refund" },
     ],
   },
   {

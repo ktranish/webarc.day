@@ -1,34 +1,14 @@
-import { BASE_URL } from "@/constants";
+import { buildMetadata } from "@/lib/metadata";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
+  type: "tools",
   title: "Developer Tools & Resources | webarc.day",
   description:
     "A curated collection of essential developer tools and resources to enhance your development workflow. Find the best tools for web development, productivity, and more.",
-  openGraph: {
-    title: "Developer Tools & Resources | webarc.day",
-    description:
-      "A curated collection of essential developer tools and resources to enhance your development workflow. Find the best tools for web development, productivity, and more.",
-    type: "website",
-    url: BASE_URL + "/tools",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Developer Tools & Resources | webarc.day",
-    description:
-      "A curated collection of essential developer tools and resources to enhance your development workflow. Find the best tools for web development, productivity, and more.",
-  },
-  alternates: {
-    canonical: BASE_URL + "/tools",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-  other: {
-    language: "en",
-  },
-};
+  path: "/tools",
+  tools: [], // Will be populated dynamically from the API
+});
 
 export default function ToolsLayout({
   children,
