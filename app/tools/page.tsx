@@ -2,7 +2,7 @@
 
 import { AppImage } from "@/components/app-image";
 import { cn } from "@/lib/utils";
-import type { ToolItem } from "@/types";
+import type { ToolItem } from "@/types/tool";
 import { ArrowRight, Megaphone, Wrench } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";

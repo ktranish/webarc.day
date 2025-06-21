@@ -1,21 +1,13 @@
-import client from "@/lib/mongodb";
+import { getFeaturedTools } from "@/lib/data/tools";
+import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const db = client.db("webarc");
-    const collection = db.collection("tools");
+    const tools = await getFeaturedTools();
 
-    const tools = await collection
-      .find({ featured: true })
-      .sort({ _id: -1 })
-      .toArray();
-
-    return new Response(JSON.stringify({ tools }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.json({ tools });
   } catch (e: unknown) {
     const error = e instanceof Error ? e.message : "Unknown error occurred";
-    return new Response(JSON.stringify({ error }), { status: 500 });
+    return NextResponse.json({ error }, { status: 500 });
   }
 }

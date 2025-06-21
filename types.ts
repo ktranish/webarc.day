@@ -1,10 +1,3 @@
-export interface ToolItem {
-  title: string;
-  description: string;
-  category: string;
-  url: string;
-}
-
 export interface NewsItem {
   id: string;
   favicon: string;

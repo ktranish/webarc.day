@@ -1,14 +1,14 @@
-import client from "@/lib/mongodb";
+import { getToolCategories } from "@/lib/data/tools";
+import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const db = client.db("webarc");
-    const categories = await db.collection("tools").distinct("category");
+    const categories = await getToolCategories();
 
-    return Response.json(categories);
+    return NextResponse.json(categories);
   } catch (error) {
     console.error("Error fetching tool categories:", error);
-    return Response.json(
+    return NextResponse.json(
       { error: "Failed to fetch categories" },
       { status: 500 },
     );
