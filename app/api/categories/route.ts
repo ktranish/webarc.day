@@ -1,10 +1,9 @@
-import client from "@/lib/mongodb";
+import { getNewsCategories } from "@/lib/data/news";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const db = client.db("webarc");
-    const categories = await db.collection("posts").distinct("category");
+    const categories = await getNewsCategories();
 
     return NextResponse.json(categories);
   } catch (error) {

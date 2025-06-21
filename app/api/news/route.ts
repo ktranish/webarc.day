@@ -1,60 +1,21 @@
 import { LIMIT } from "@/constants";
-import client from "@/lib/mongodb";
-import type { NewsItem } from "@/types";
-import { ObjectId } from "mongodb";
+import { getNewsByCursor } from "@/lib/data/news";
 import { NextRequest } from "next/server";
-
-interface MongoPost extends NewsItem {
-  _id: ObjectId;
-}
-
-interface MongoQuery {
-  draft: boolean;
-  _id?: { $lt: ObjectId };
-  category?: { $in: string[] };
-}
-
-interface NewsResponse {
-  posts: NewsItem[];
-  nextCursor: string | null | undefined;
-  hasMore: boolean;
-}
 
 export async function GET(req: NextRequest) {
   try {
-    const db = client.db("webarc");
-    const collection = db.collection<MongoPost>("posts");
     const { searchParams } = new URL(req.url);
     const cursor = searchParams.get("cursor");
     const categories = searchParams.get("categories")?.split(",");
 
-    const query: MongoQuery = { draft: false };
-    if (cursor) {
-      query._id = { $lt: new ObjectId(cursor) };
-    }
+    const filter: any = { draft: false };
     if (categories && categories.length > 0) {
-      query.category = { $in: categories };
+      filter.category = { $in: categories };
     }
 
-    const posts = await collection
-      .find(query, { projection: { _id: 0 } })
-      .sort({ _id: -1 })
-      .limit(LIMIT)
-      .toArray();
+    const result = await getNewsByCursor(cursor || undefined, LIMIT, filter);
 
-    // Fetch the _id of the last post for the next cursor
-    const rawPosts = await collection
-      .find(query)
-      .sort({ _id: -1 })
-      .limit(LIMIT)
-      .toArray();
-    const hasMore = rawPosts.length === LIMIT;
-    const nextCursor = hasMore
-      ? rawPosts[rawPosts.length - 1]?._id.toString()
-      : null;
-
-    const response: NewsResponse = { posts, nextCursor, hasMore };
-    return new Response(JSON.stringify(response), {
+    return new Response(JSON.stringify(result), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
