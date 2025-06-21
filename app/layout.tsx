@@ -64,29 +64,57 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <Script id="gtm-consent" strategy="beforeInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+
+            // Set default consent to 'denied' as a placeholder
+            // Determine actual values based on customer's own requirements
+            gtag('consent', 'default', {
+              'ad_storage': 'denied',
+              'ad_user_data': 'denied',
+              'ad_personalization': 'denied',
+              'analytics_storage': 'denied',
+              'wait_for_update': 500
+            });
+            gtag('set', 'ads_data_redaction', true);
+            gtag('set', 'url_passthrough', true);
+          `}
+        </Script>
         <Script
-          id="google-tag-manager"
-          dangerouslySetInnerHTML={{
-            __html: `
+          id="CookieConsent"
+          src="https://policy.app.cookieinformation.com/uc.js"
+          data-culture="EN"
+          data-gcm-version="2.0"
+        />
+        {process.env.NODE_ENV === "production" && (
+          <Script
+            id="google-tag-manager"
+            dangerouslySetInnerHTML={{
+              __html: `
               (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
               new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
               j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
               })(window,document,'script','dataLayer','GTM-PP5R7VGW');
             `,
-          }}
-        />
+            }}
+          />
+        )}
       </head>
       <body className={cn("antialiased", sora.className)}>
-        <noscript>
-          <iframe
-            title="gtm"
-            src="https://www.googletagmanager.com/ns.html?id=GTM-5DF5DBCR"
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-          ></iframe>
-        </noscript>
+        {process.env.NODE_ENV === "production" && (
+          <noscript>
+            <iframe
+              title="gtm"
+              src="https://www.googletagmanager.com/ns.html?id=GTM-5DF5DBCR"
+              height="0"
+              width="0"
+              style={{ display: "none", visibility: "hidden" }}
+            ></iframe>
+          </noscript>
+        )}
         <MotionConfig reducedMotion="user">
           <Navbar />
           {children}
