@@ -5,7 +5,7 @@ import { TrustBadge } from "@/components/trust-badge";
 import { categoryGradients } from "@/constants";
 import { useAnimatedNumber } from "@/hooks/useAnimatedNumber";
 import { cn, getContentSlots } from "@/lib/utils";
-import { type NewsItem } from "@/types";
+import { type NewsItem } from "@/types/news";
 import { Eye, Megaphone, MousePointer, TrendingUp, Users } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
@@ -745,7 +745,7 @@ export function News(): React.ReactElement {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch("/api/categories");
+        const res = await fetch("/api/news/categories");
         const data = await res.json();
         setCategories(data);
       } catch (error) {
